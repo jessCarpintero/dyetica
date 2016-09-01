@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_balancer_plus"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Equilibrador Plus" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Mi perfil" />
+        <item
+            android:id="@+id/nav_dyetica"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="¿Dyética?" />
+        <item
+            android:id="@+id/nav_bases_and_obj"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Bases y objetivos" />
+    </group>
+
+    <item android:title="Comunicación">
+        <menu>
+            <item
+                android:id="@+id/nav_blog"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Blog" />
+            <item
+                android:id="@+id/nav_foro"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Foro" />
+        </menu>
+    </item>
+
+    <item android:title="Ayuda">
+        <menu>
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Ayuda" />
+        </menu>
+    </item>
+
+</menu>
