@@ -17,8 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            <!-- NO FUNCIONA POR DEBAJO DE LA 23
-            android:titleTextColor="@style/titleToolbarStyle"-->
+            android:theme="@style/Toolbar"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>

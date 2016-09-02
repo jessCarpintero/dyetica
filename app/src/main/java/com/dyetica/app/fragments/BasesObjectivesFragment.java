@@ -1,14 +1,28 @@
 package com.dyetica.app.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.dyetica.app.R;
+import com.dyetica.app.persistence.ClientHTTP;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,14 +33,10 @@ import com.dyetica.app.R;
  * create an instance of this fragment.
  */
 public class BasesObjectivesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String URL_SERVER_BASES_AND_OBJECTIVES = "http://www.probasmar.es/dyetica3/app/restapi/basesyobjetivos";
+    private static final String TAG_MESSAGE = "message";
+    private ProgressDialog pDialog;
+    private String mResultBasesObjectives;
 
     private OnFragmentInteractionListener mListener;
 
@@ -38,34 +48,47 @@ public class BasesObjectivesFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment BasesObjectivesFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static BasesObjectivesFragment newInstance(String param1, String param2) {
+    public static BasesObjectivesFragment newInstance() {
         BasesObjectivesFragment fragment = new BasesObjectivesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Set fragment_attractions.xml to be the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_bases_objectives, container, false);
+
+        mResultBasesObjectives = getResultBasesAndObjectives();
+
+        TextView mTextBasesObjectives = (TextView) rootView.findViewById(R.id.text_bases_and_objectives);
+        mTextBasesObjectives.setText(Html.fromHtml(mResultBasesObjectives));
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bases_objectives, container, false);
+        return rootView;
+    }
+
+    private String getResultBasesAndObjectives(){
+        String resultBasesObjectives = "";
+        try {
+            resultBasesObjectives = new String(new AttemptBasesAndObjectives().execute(new URL(URL_SERVER_BASES_AND_OBJECTIVES)).get().getBytes(), "UTF-8");
+        } catch (MalformedURLException e) {
+            Log.e("DyeticaFragment", "Error Malformed URL: " + URL_SERVER_BASES_AND_OBJECTIVES);
+        } catch (InterruptedException e) {
+            Log.e("DyeticaFragment", "Interrupted AttempDyetica: " + e.getMessage());
+        } catch (ExecutionException e) {
+            Log.e("DyeticaFragment", "Error execution AttempDyetica: " + e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            Log.e("DyeticaFragment", "Error unsupported encoding in AttempDyetica: " + e.getMessage());
+        }
+        return resultBasesObjectives;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -92,6 +115,14 @@ public class BasesObjectivesFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if ((pDialog != null) && pDialog.isShowing())
+            pDialog.dismiss();
+        pDialog = null;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -106,4 +137,56 @@ public class BasesObjectivesFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    public class AttemptBasesAndObjectives extends AsyncTask<URL, Void, String> {
+        private ProgressDialog pDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(getContext());
+            pDialog.setMessage("Obteniendo bases y objetivos ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(URL... urls) {
+
+            String success, message = "";
+            JSONObject jsonObject;
+            ClientHTTP clientHTTP = new ClientHTTP();
+            try {
+                jsonObject = clientHTTP.makeHttpRequest(urls[0]);
+
+                // json success element
+                success = jsonObject.getString("error");
+                if (success == "false") {
+                    Log.d("Text BAndO Succes!", jsonObject.toString());
+                    message = jsonObject.getString(TAG_MESSAGE);
+                    return message;
+                } else {
+                    Log.d("Text BAndO Failure!", jsonObject.getString(TAG_MESSAGE));
+                    message = jsonObject.getString(TAG_MESSAGE);
+                    return message;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return message;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once product deleted
+            if ((pDialog != null) && pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
+
+        }
+    }
 }
+

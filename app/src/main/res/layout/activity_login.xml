@@ -23,7 +23,6 @@
     <ImageView
         android:layout_width="385dp"
         android:layout_height="190dp"
-        android:id="@+id/logo_dyetica_login"
         android:src="@drawable/logo_dyetica"
         android:paddingBottom="@dimen/padding_bottom_image_logo_login"
         android:layout_gravity="center_horizontal" />
@@ -34,7 +33,6 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

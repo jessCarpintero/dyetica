@@ -8,11 +8,9 @@
         <string name="title_activity_login">Iniciar sesión</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_user_name">Usuario</string>
     <string name="prompt_password">Contraseña</string>
     <string name="action_sign_in">Iniciar sesión</string>
     <string name="action_sign_in_short">Iniciar sesión</string>
-    <string name="error_invalid_email">La dirección de correo eléctronico es incorrecto</string>
     <string name="error_invalid_password">La contraseña es demasiado corta</string>
     <string name="error_incorrect_password">Contraseña incorrecta</string>
     <string name="error_field_required">Campo requerido</string>
@@ -21,5 +19,4 @@
     </string>
 
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

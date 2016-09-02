@@ -4,11 +4,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_balancer_plus"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@android:drawable/ic_dialog_dialer"
             android:title="Equilibrador Plus" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@android:drawable/ic_dialog_dialer"
             android:title="Mi perfil" />
         <item
             android:id="@+id/nav_dyetica"
