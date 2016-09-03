@@ -29,6 +29,7 @@
     <!-- String related with Toast -->
     <string name="error_load_data">Ocurrio un error al cargar los datos, compruebe que tiene conexión a internet o vuelva a intentarlo más tarde</string>
     <string name="error_authetication">Ha caducado la sesión, por favor vuelva a conectar</string>
+    <string name="error_connection">Error de conexión, vuelva a intentarlo más tarde</string>
 
 
     <!-- Strings related to login -->
@@ -41,6 +42,19 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="attempt_login">"Iniciando sesión ..."</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- String related url http -->
+    <string name="url_bases_and_objectives">http://www.probasmar.es/dyetica3/app/restapi/basesyobjetivos</string>
+    <string name="url_dyetica">http://www.probasmar.es/dyetica3/app/restapi/dyetica</string>
+    <string name="url_login">http://www.probasmar.es/dyetica3/app/restapi/login</string>
+
+    <!-- Variables response http -->
+    <string name="status">status</string>
+    <string name="error">error</string>
+    <string name="message">message</string>
+
+
+
+    <!-- TODO: Remove or change this placeholder text -->
 </resources>

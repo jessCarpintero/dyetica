@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:text="Usuario"
+                android:hint="Usuario"
                 android:ems="10"
                 android:id="@+id/user_text" />
             </android.support.design.widget.TextInputLayout>

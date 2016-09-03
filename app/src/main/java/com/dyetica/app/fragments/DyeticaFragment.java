@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutionException;
  */
 public class DyeticaFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String URL_SERVER_DYETICA = "http://www.probasmar.es/dyetica3/app/restapi/dyetica";
     private static final String TAG_MESSAGE = "message";
     private ProgressDialog pDialog;
 
@@ -88,10 +87,10 @@ public class DyeticaFragment extends Fragment {
         Boolean error;
         Map<String, String> resultBasesObjectives;
         try {
-            resultBasesObjectives = new AttemptDyetica().execute(new URL(URL_SERVER_DYETICA)).get();
-            statusCode = resultBasesObjectives.get("status");
-            message = resultBasesObjectives.get("message");
-            error = Boolean.parseBoolean(resultBasesObjectives.get("error"));
+            resultBasesObjectives = new AttemptDyetica().execute(new URL(getString(R.string.url_dyetica))).get();
+            statusCode = resultBasesObjectives.get(getString(R.string.status));
+            message = resultBasesObjectives.get(getString(R.string.message));
+            error = Boolean.parseBoolean(resultBasesObjectives.get(getString(R.string.error)));
 
             if (getString(R.string.status_400).equals(statusCode) || getString(R.string.status_401).equals(statusCode)){
                 Toast.makeText(getActivity(), getString(R.string.error_authetication), Toast.LENGTH_LONG).show();
@@ -106,7 +105,7 @@ public class DyeticaFragment extends Fragment {
                 }
             }
         } catch (MalformedURLException e) {
-            Log.e("DyeticaFragment", "Error Malformed URL: " + URL_SERVER_DYETICA);
+            Log.e("DyeticaFragment", "Error Malformed URL: " + getString(R.string.url_dyetica));
         } catch (InterruptedException e) {
             Log.e("DyeticaFragment", "Interrupted AttempDyetica: " + e.getMessage());
         } catch (ExecutionException e) {

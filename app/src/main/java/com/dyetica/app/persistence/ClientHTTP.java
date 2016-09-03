@@ -24,36 +24,63 @@ import java.util.Map;
  */
 public class ClientHTTP {
 
-    private static final String TAG_MESSAGE = "message";
 
-    public Map<String, String> makeHttpRequest(URL url, String method, String authorization, Uri.Builder params){
-        JSONObject jsonObject;
+    private static final String TAG_MESSAGE = "message";
+    private static final String TAG_ERROR = "error";
+    private static final String TAG_STATUS = "status";
+
+
+    public Map<String, String> makeHttpRequest(URL url, String method, String authorization, String params) {
+        //Establishing a connection
         HttpURLConnection con = null;
+        try {
+            con = (HttpURLConnection) url.openConnection();
+            Log.d("ClientHttp", "Creando conexión");
+            con.setConnectTimeout(10000);
+            con.setReadTimeout(15000);
+            if (authorization != "")
+                con.setRequestProperty("X-Authorization", authorization);
+            switch (method) {
+                case "POST":
+                    con.setRequestMethod("POST");
+                    con.setDoInput(true);
+                    con.setDoOutput(true);
+                    con.setUseCaches(false);
+                    Log.d("ClientHttp", "Dentro de POST");
+                    if (params != null)
+                        paramsUrl(con, params);
+                    break;
+                case "GET":
+                    Log.d("ClientHttp", "Dentro de GET");
+                    con.setRequestMethod("GET");
+                    if (params != null)
+                        paramsUrl(con, params);
+                    break;
+            }
+        } catch (ProtocolException e) {
+            Log.e("ClientHTTP", "Error in protocol the connection");
+        } catch (IOException e) {
+            Log.e("ClientHTTP", "Error initializing the connection");
+        }
+        return getResponse(con);
+    }
+
+
+    private Map<String, String> getResponse(HttpURLConnection con){
+        JSONObject jsonObject;
         String error = "", message = "";
         Map<String, String> reponse =  new HashMap<String, String>();
         try {
-            con = getConnection(url, method, authorization);
-
             // Get the state of the resource
             int statusCode = con.getResponseCode();
+
+            Log.d("ClientHTTP", "Valor de statusCode " + statusCode);
 
             if (statusCode != 200){
                 Log.e("ClientHTTP", "Error server with status code: " + statusCode);
             } else {
-                if ("POST".equals(method)){
-                    OutputStream os = con.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(
-                            new OutputStreamWriter(os, "UTF-8"));
-                    writer.write(params.build().getEncodedQuery());
-                    writer.flush();
-                    writer.close();
-                    os.close();
-                    Log.d("ClientHTTP", "Closed WRITE and OS");
-
-                }
-
                 InputStream inputStream = con.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"), 8);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
                 StringBuilder sb = new StringBuilder();
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -68,18 +95,20 @@ public class ClientHTTP {
                 jsonObject = new JSONObject(sb.toString());
 
                 // json error element
-                error = jsonObject.getString("error");
+                error = jsonObject.getString(TAG_ERROR);
+                Log.d("ClientHTTP", "Valor de error: " + error);
+
                 if (error == "false") {
-                    Log.d("Text BAndO Success!", jsonObject.toString());
+                    Log.d("ClientHTTP", "Message Success!  " + jsonObject.toString());
                     message = jsonObject.getString(TAG_MESSAGE);
                 } else {
-                    Log.d("Text BAndO Failure!", jsonObject.getString(TAG_MESSAGE));
+                    Log.d("ClientHTTP", "Message Failure! "  + jsonObject.getString(TAG_MESSAGE));
                     message = jsonObject.getString(TAG_MESSAGE);
                 }
             }
-            reponse.put("status", String.valueOf(statusCode));
-            reponse.put("error", error);
-            reponse.put("message", message);
+            reponse.put(TAG_STATUS, String.valueOf(statusCode));
+            reponse.put(TAG_ERROR, error);
+            reponse.put(TAG_MESSAGE, message);
         } catch (JSONException e) {
             Log.e("HTTPClient", "Error parsing data ");
         } catch (Exception e) {
@@ -91,31 +120,20 @@ public class ClientHTTP {
         return reponse;
     }
 
-    private HttpURLConnection getConnection(URL url, String method, String authorization) throws ProtocolException {
-        //Establishing a connection
-        HttpURLConnection con = null;
+    private void paramsUrl(HttpURLConnection con, String params){
         try {
-            con = (HttpURLConnection) url.openConnection();
-
-            con.setConnectTimeout(10000);
-            con.setReadTimeout(15000);
-            con.setRequestProperty("X-Authorization", authorization);
-            switch (method) {
-                case "POST":
-                    con.setRequestMethod("POST");
-                    con.setDoInput(true);
-                    con.setDoOutput(true);
-                    con.setUseCaches(false);
-                    break;
-                case "GET":
-                    con.setRequestMethod("GET");
-                    break;
-            }
+            OutputStream os = con.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            Log.d("ClientHTTP", "Valor de query: " + params);
+            writer.write(params);
+            writer.flush();
+            writer.close();
+            os.close();
         } catch (IOException e) {
-            Log.e("ClientHTTP", "Error initializing the connection");
+            e.printStackTrace();
         }
-        return con;
+        Log.d("ClientHTTP", "Closed WRITE and OS");
     }
-
 
 }

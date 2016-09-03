@@ -3,7 +3,10 @@ package com.dyetica.app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -20,6 +23,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,9 +34,22 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dyetica.app.persistence.ClientHTTP;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -46,17 +64,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
-
+    private AttemptLogin mAuthTask = null;
     // UI references.
     private EditText mUserNameView;
     private EditText mPasswordView;
@@ -64,25 +74,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginScrollFormView;
 
+    /**
+     * Parameters preferences
+     */
+    private SharedPreferences _prefs;
+    private SharedPreferences.Editor _prefsEditor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        _prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+        _prefsEditor = _prefs.edit();
         // Set up the login form.
         mUserNameView = (EditText) findViewById(R.id.user_text);
-      //  populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
 
         mLinkRegisterView = (TextView) findViewById(R.id.link_register);
 
@@ -91,10 +98,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
-
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                finish();
-                startActivity(i);
             }
         });
 
@@ -152,6 +155,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        Map<String, String> success = new HashMap<>();
+        Boolean error = true;
+
         if (mAuthTask != null) {
             return;
         }
@@ -161,42 +167,69 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String userName = mUserNameView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        String userName = mUserNameView.getText().toString().trim();
+        String password = mPasswordView.getText().toString().trim();
+
+        Log.d("LoginActivity", "Valor de userName: " + userName);
+        Log.d("LoginActivity", "Valor de contraseña: " + password);
+
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (TextUtils.isEmpty(password)) {
+            Log.d("LoginActivity", "contraseña vacia");
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(userName)) {
+            Log.d("LoginActivity", "nombre de usuario vacio");
+
             mUserNameView.setError(getString(R.string.error_field_required));
             focusView = mUserNameView;
             cancel = true;
         }
 
         if (cancel) {
+            Log.d("LoginActivity", "Dentro de cancel");
+
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
+            Log.d("LoginActivity", "No deberia ESTA AQUI");
+
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(userName, password);
-            mAuthTask.execute((Void) null);
-        }
-    }
+            mAuthTask = new AttemptLogin(userName, password);
+            try {
+                success = mAuthTask.execute((Void) null).get();
+                Log.d("VERBOSE", "Despues de success: " + success.toString());
 
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+
+            error = Boolean.parseBoolean(success.get(getString(R.string.error)));
+            Log.d("VERBOSE", "Valor de ERROR: " + error);
+
+            if (!error) {
+                Log.d("VERBOSE", "Valor de ERROR: " + error);
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                finish();
+                startActivity(i);
+            } else {
+                Toast.makeText(this, success.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     /**
@@ -277,61 +310,105 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
+    class AttemptLogin extends AsyncTask<Void, Void, Map<String, String>> {
         private final String mUserName;
         private final String mPassword;
+        private String error, message, statusCode, params;
+        private Map<String, String> success = new HashMap<>();
 
-        UserLoginTask(String userName, String password) {
-            mUserName = userName;
+        AttemptLogin(String username, String password) {
+            mUserName = username;
             mPassword = password;
         }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
+        @Override
+        protected Map<String, String> doInBackground(Void... args) {
+            // Check for success tag
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+                // Building Parameters
+                Log.v("VERBOSE", "VAlor de username" + mUserName);
+                Log.v("VERBOSE", "VAlor de pass" + mPassword);
+                Log.v("VERBOSE", "url" + getString(R.string.url_login));
+                params = "username=" + mUserName + "&password=" + encode64(mPassword);
+                Log.d("request!", "starting, valor de params: " + params);
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mUserName)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                // getting product details by making HTTP request
+                ClientHTTP clientHTTP = new ClientHTTP();
+                Map<String, String> response = clientHTTP.makeHttpRequest(new URL(getString(R.string.url_login)), "POST", "", params);
+
+                // check your log for json response
+                Log.d("VERBOSE", response.toString());
+                statusCode = response.get(getString(R.string.status));
+                success.put(getString(R.string.status), statusCode);
+                if (!getString(R.string.status_200).equals(statusCode)){
+                    Log.d("VERBOSE", "ERROR distinto de 200");
+                    success.put(getString(R.string.error), "true");
+                    success.put(getString(R.string.message), getString(R.string.error_connection));
+                } else {
+                    Log.d("VERBOSE", "Status igual 200");
+                    error = response.get("error");
+                    message = response.get("message");
+                    if (error == "false") {
+                        Log.d("VERBOSE", "Valor de mensaje: " + message);
+                        JSONObject json = new JSONObject(message);
+                        saveUserDBAndPreferences(json);
+                       // if (_prefs.getInt("idUserCurrent", 0) == idUser || _prefs.getInt("idUserCurrent", 0) == 0)
+                         //   _prefsEditor.putInt("idUserCurrent", idUser);
+                        //else {
+                          //  _prefsEditor.putInt("idUserOld", _prefs.getInt("idUserCurrent", 0));
+                        //     _prefsEditor.putInt("idUserCurrent", idUser);
+                        //   }
+                        //    if (remember.isChecked()) {
+                        //      _prefsEditor.putString("email", mail.getText().toString().trim());
+                        //      _prefsEditor.putString("password", pass.getText().toString().trim());
+                        //    } else {
+                        //     _prefsEditor.putString("email", "");
+                        //      _prefsEditor.putString("password", "");
+                        //   }
+                        //   _prefsEditor.commit();
+                        //  if (dbManager.getUser(idUser) == null) {
+                        //       dbManager.addUser(new UserVO(idUser, json.getString("email"), json.getString("name"), json.getString("apiKey"), json.getString("createdAt"), "", 0, 0));
+                        //    }
+                    }
+                    Log.d("VERBOSE", "Escribiendo success");
+
+                    success.put(getString(R.string.error), error);
+                    success.put(getString(R.string.message), message);
+                    Log.d("VERBOSE", "Terminando success");
+
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
+            Log.d("VERBOSE", "Enviando success");
 
-            // TODO: register the new account here.
-            return true;
+            return success;
         }
 
+        /**
+         * After completing background task Dismiss the progress dialog
+         * *
+         */
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
+        protected void onPostExecute(final Map<String, String> values) {
             mAuthTask = null;
             showProgress(false);
         }
+
+        private String encode64(String mPassword){
+            return Base64.encodeToString(mPassword.getBytes(), Base64.DEFAULT);
+        }
+
+        private void saveUserDBAndPreferences(JSONObject jsonObject){
+
+        }
+
+
     }
+
+
 }
 

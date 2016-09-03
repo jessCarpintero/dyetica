@@ -34,7 +34,6 @@ import java.util.concurrent.ExecutionException;
  * create an instance of this fragment.
  */
 public class BasesObjectivesFragment extends Fragment {
-    private static final String URL_SERVER_BASES_AND_OBJECTIVES = "http://www.probasmar.es/dyetica3/app/restapi/basesyobjetivos";
     private ProgressDialog pDialog;
     private String mResultBasesObjectives;
 
@@ -85,10 +84,10 @@ public class BasesObjectivesFragment extends Fragment {
         Boolean error;
         Map<String, String> resultBasesObjectives;
         try {
-            resultBasesObjectives = new AttemptBasesAndObjectives().execute(new URL(URL_SERVER_BASES_AND_OBJECTIVES)).get();
-            statusCode = resultBasesObjectives.get("status");
-            message = resultBasesObjectives.get("message");
-            error = Boolean.parseBoolean(resultBasesObjectives.get("error"));
+            resultBasesObjectives = new AttemptBasesAndObjectives().execute(new URL(getString(R.string.url_bases_and_objectives))).get();
+            statusCode = resultBasesObjectives.get(getString(R.string.status));
+            message = resultBasesObjectives.get(getString(R.string.message));
+            error = Boolean.parseBoolean(resultBasesObjectives.get(getString(R.string.error)));
 
             if (getString(R.string.status_400).equals(statusCode) || getString(R.string.status_401).equals(statusCode)){
                 Toast.makeText(getActivity(), getString(R.string.error_authetication), Toast.LENGTH_LONG).show();
@@ -103,7 +102,7 @@ public class BasesObjectivesFragment extends Fragment {
                 }
             }
         } catch (MalformedURLException e) {
-            Log.e("BasesObjectivesFragment", "Error Malformed URL: " + URL_SERVER_BASES_AND_OBJECTIVES);
+            Log.e("BasesObjectivesFragment", "Error Malformed URL: " + getString(R.string.url_bases_and_objectives));
         } catch (InterruptedException e) {
             Log.e("BasesObjectivesFragment", "Interrupted AttemptBasesAndObjectives: " + e.getMessage());
         } catch (ExecutionException e) {
