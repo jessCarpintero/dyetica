@@ -2,6 +2,7 @@ package com.dyetica.app.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,16 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dyetica.app.LoginActivity;
 import com.dyetica.app.R;
 import com.dyetica.app.persistence.ClientHTTP;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -34,7 +35,6 @@ import java.util.concurrent.ExecutionException;
  */
 public class BasesObjectivesFragment extends Fragment {
     private static final String URL_SERVER_BASES_AND_OBJECTIVES = "http://www.probasmar.es/dyetica3/app/restapi/basesyobjetivos";
-    private static final String TAG_MESSAGE = "message";
     private ProgressDialog pDialog;
     private String mResultBasesObjectives;
 
@@ -75,20 +75,43 @@ public class BasesObjectivesFragment extends Fragment {
         return rootView;
     }
 
+
+    /** Get results dyetica from server or DB
+     *
+     * @return result
+     */
     private String getResultBasesAndObjectives(){
-        String resultBasesObjectives = "";
+        String result = "", statusCode = "", message = "";
+        Boolean error;
+        Map<String, String> resultBasesObjectives;
         try {
-            resultBasesObjectives = new String(new AttemptBasesAndObjectives().execute(new URL(URL_SERVER_BASES_AND_OBJECTIVES)).get().getBytes(), "UTF-8");
+            resultBasesObjectives = new AttemptBasesAndObjectives().execute(new URL(URL_SERVER_BASES_AND_OBJECTIVES)).get();
+            statusCode = resultBasesObjectives.get("status");
+            message = resultBasesObjectives.get("message");
+            error = Boolean.parseBoolean(resultBasesObjectives.get("error"));
+
+            if (getString(R.string.status_400).equals(statusCode) || getString(R.string.status_401).equals(statusCode)){
+                Toast.makeText(getActivity(), getString(R.string.error_authetication), Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getActivity(), LoginActivity.class);
+                startActivity(i);
+            } else if (getString(R.string.status_200).equals(statusCode)) {
+                if (error){
+                    //TODO: Preguntar a BD local si tiene los datos en caso de no tenerlos mostrar mensaje de error
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                } else {
+                    result = new String(message.getBytes(),  "UTF-8");
+                }
+            }
         } catch (MalformedURLException e) {
-            Log.e("DyeticaFragment", "Error Malformed URL: " + URL_SERVER_BASES_AND_OBJECTIVES);
+            Log.e("BasesObjectivesFragment", "Error Malformed URL: " + URL_SERVER_BASES_AND_OBJECTIVES);
         } catch (InterruptedException e) {
-            Log.e("DyeticaFragment", "Interrupted AttempDyetica: " + e.getMessage());
+            Log.e("BasesObjectivesFragment", "Interrupted AttemptBasesAndObjectives: " + e.getMessage());
         } catch (ExecutionException e) {
-            Log.e("DyeticaFragment", "Error execution AttempDyetica: " + e.getMessage());
+            Log.e("BasesObjectivesFragment", "Error execution AttemptBasesAndObjectives: " + e.getMessage());
         } catch (UnsupportedEncodingException e) {
-            Log.e("DyeticaFragment", "Error unsupported encoding in AttempDyetica: " + e.getMessage());
+            Log.e("BasesObjectivesFragment", "Error unsupported encoding in AttemptBasesAndObjectives: " + e.getMessage());
         }
-        return resultBasesObjectives;
+        return result.trim();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -138,49 +161,31 @@ public class BasesObjectivesFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public class AttemptBasesAndObjectives extends AsyncTask<URL, Void, String> {
+    public class AttemptBasesAndObjectives extends AsyncTask<URL, Void, Map<String, String>> {
         private ProgressDialog pDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(getContext());
-            pDialog.setMessage("Obteniendo bases y objetivos ...");
+            pDialog.setMessage(getString(R.string.dialog_get_data));
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
         }
 
         @Override
-        protected String doInBackground(URL... urls) {
+        protected Map<String, String> doInBackground(URL... urls) {
 
-            String success, message = "";
-            JSONObject jsonObject;
             ClientHTTP clientHTTP = new ClientHTTP();
-            try {
-                jsonObject = clientHTTP.makeHttpRequest(urls[0]);
-
-                // json success element
-                success = jsonObject.getString("error");
-                if (success == "false") {
-                    Log.d("Text BAndO Succes!", jsonObject.toString());
-                    message = jsonObject.getString(TAG_MESSAGE);
-                    return message;
-                } else {
-                    Log.d("Text BAndO Failure!", jsonObject.getString(TAG_MESSAGE));
-                    message = jsonObject.getString(TAG_MESSAGE);
-                    return message;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return message;
+            return clientHTTP.makeHttpRequest(urls[0], "GET", "018da74ea8cbf87ce79ed34688960291", null);
         }
 
         /**
          * After completing background task Dismiss the progress dialog
          * **/
-        protected void onPostExecute(String file_url) {
+        @Override
+        protected void onPostExecute(Map<String, String> file_url) {
             // dismiss the dialog once product deleted
             if ((pDialog != null) && pDialog.isShowing()) {
                 pDialog.dismiss();

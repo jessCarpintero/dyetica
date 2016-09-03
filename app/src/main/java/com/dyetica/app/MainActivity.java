@@ -1,11 +1,13 @@
 package com.dyetica.app;
 
+import android.app.ActionBar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.AutoText;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -40,15 +42,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -148,6 +141,7 @@ public class MainActivity extends AppCompatActivity
                 BalancerPlusFragment balancerPlusFragment = new BalancerPlusFragment();
                 fragmentTransaction.replace(R.id.all_fragments, balancerPlusFragment);
                 fragmentTransaction.commit();
+                restoreActionBar(getString(R.string.app_name));
                 break;
             case 1:
                 fragmentManager = getSupportFragmentManager();
@@ -155,6 +149,7 @@ public class MainActivity extends AppCompatActivity
                 ProfileFragment profileFragment = new ProfileFragment();
                 fragmentTransaction.replace(R.id.all_fragments, profileFragment);
                 fragmentTransaction.commit();
+                restoreActionBar(getString(R.string.title_profile));
                 break;
             case 2:
                 fragmentManager = getSupportFragmentManager();
@@ -162,6 +157,7 @@ public class MainActivity extends AppCompatActivity
                 DyeticaFragment dyeticaFragment = new DyeticaFragment();
                 fragmentTransaction.replace(R.id.all_fragments, dyeticaFragment);
                 fragmentTransaction.commit();
+                restoreActionBar(getString(R.string.title_dyetica));
                 break;
             case 3:
                 fragmentManager = getSupportFragmentManager();
@@ -169,6 +165,7 @@ public class MainActivity extends AppCompatActivity
                 BasesObjectivesFragment basesObjectivesFragment = new BasesObjectivesFragment();
                 fragmentTransaction.replace(R.id.all_fragments, basesObjectivesFragment);
                 fragmentTransaction.commit();
+                restoreActionBar(getString(R.string.title_bases_and_objectives));
                 break;
             case 4:
                 fragmentManager = getSupportFragmentManager();
@@ -176,6 +173,7 @@ public class MainActivity extends AppCompatActivity
                 BlogFragment blogFragment = new BlogFragment();
                 fragmentTransaction.replace(R.id.all_fragments, blogFragment);
                 fragmentTransaction.commit();
+                restoreActionBar(getString(R.string.title_blog));
                 break;
             case 5:
                 fragmentManager = getSupportFragmentManager();
@@ -183,6 +181,7 @@ public class MainActivity extends AppCompatActivity
                 ForoFragment foroFragment = new ForoFragment();
                 fragmentTransaction.replace(R.id.all_fragments, foroFragment);
                 fragmentTransaction.commit();
+                restoreActionBar(getString(R.string.title_foro));
                 break;
             case 6:
                 fragmentManager = getSupportFragmentManager();
@@ -190,8 +189,16 @@ public class MainActivity extends AppCompatActivity
                 HelpFragment helpFragment = new HelpFragment();
                 fragmentTransaction.replace(R.id.all_fragments, helpFragment);
                 fragmentTransaction.commit();
+                restoreActionBar(getString(R.string.title_help));
                 break;
         }
+    }
+
+    /**
+     * Resets the status bar
+     */
+    public void restoreActionBar(String mTitle) {
+        toolbar.setTitle(mTitle);
     }
 
     @Override

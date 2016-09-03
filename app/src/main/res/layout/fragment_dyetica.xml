@@ -4,11 +4,29 @@
     android:layout_height="match_parent"
     tools:context="com.dyetica.app.fragments.DyeticaFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/text_dyetica"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hola estoy en DYETICA" />
+        android:id="@+id/scrollViewDyetica"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="1dp" >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo_dyetica"
+            android:id="@+id/imageViewDyetica"
+            android:paddingBottom="20dp"
+            android:layout_gravity="top" />
 
+        <TextView
+            android:id="@+id/text_dyetica"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

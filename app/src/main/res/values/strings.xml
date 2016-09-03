@@ -1,11 +1,35 @@
 <resources>
-    <string name="app_name">Dyetica</string>
-    
+    <string name="app_name">Dyética</string>
+
+    <string name="title_blog">Blog</string>
+    <string name="title_foro">Foro</string>
+    <string name="title_dyetica">¿Dyetica?</string>
+    <string name="title_help">Ayuda</string>
+    <string name="title_balancer_plus">Equilibrador Plus</string>
+    <string name="title_profile">Mi perfil</string>
+    <string name="title_bases_and_objectives">Bases y objetivos</string>
+    <string name="title_perfil_dietetico">Perfil dietético</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_get_data">Obteniendo datos</string>
+
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Ajustes</string>
         <string name="title_activity_login">Iniciar sesión</string>
+
+    <!-- String related status code -->
+    <string name="status_200">200</string>
+    <string name="status_500">500</string>
+    <string name="status_400">400</string>
+    <string name="status_401">401</string>
+
+    <!-- String related with Toast -->
+    <string name="error_load_data">Ocurrio un error al cargar los datos, compruebe que tiene conexión a internet o vuelva a intentarlo más tarde</string>
+    <string name="error_authetication">Ha caducado la sesión, por favor vuelva a conectar</string>
+
 
     <!-- Strings related to login -->
     <string name="prompt_password">Contraseña</string>
