@@ -19,4 +19,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/colorTitleToolbar</item>
     </style>
+    <style name="ButtonApp" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/colorTitleToolbar</item>
+    </style>
 </resources>

@@ -3,6 +3,7 @@ package com.dyetica.app.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import android.widget.Toast;
 
 import com.dyetica.app.LoginActivity;
 import com.dyetica.app.R;
+import com.dyetica.app.model.Information;
 import com.dyetica.app.persistence.ClientHTTP;
+import com.dyetica.app.persistence.DBManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -41,6 +44,8 @@ public class DyeticaFragment extends Fragment {
     private String mResultDyetica;
 
     private OnFragmentInteractionListener mListener;
+
+    private DBManager dbManager;
 
     public DyeticaFragment() {
         // Required empty public constructor
@@ -68,8 +73,9 @@ public class DyeticaFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Set fragment_attractions.xml to be the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dyetica, container, false);
+        dbManager = DBManager.getInstance(getActivity());
 
-        mResultDyetica = getResultDyetica();
+        mResultDyetica = getHtmlDyetica();
 
         TextView mTextDyetica = (TextView) rootView.findViewById(R.id.text_dyetica);
         mTextDyetica.setText(Html.fromHtml(mResultDyetica));
@@ -82,8 +88,8 @@ public class DyeticaFragment extends Fragment {
      *
      * @return result
      */
-    private String getResultDyetica(){
-        String result = "", statusCode = "", message = "";
+    private String getHtmlDyetica(){
+        String html = "", statusCode, message;
         Boolean error;
         Map<String, String> resultBasesObjectives;
         try {
@@ -98,10 +104,16 @@ public class DyeticaFragment extends Fragment {
                 startActivity(i);
             } else if (getString(R.string.status_200).equals(statusCode)) {
                 if (error){
-                   //TODO: Preguntar a BD local si tiene los datos en caso de no tenerlos mostrar mensaje de error
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    Information information = dbManager.getInformation(getString(R.string.constant_dyetica));
+                    if (null == information){
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.e("DyeticaFragment", "Valor de base de datos, error de servidor: " + information.getHtml());
+                        html = information.getHtml();
+                    }
                 } else {
-                    result = new String(message.getBytes(),  "UTF-8");
+                    html = new String(message.getBytes(),  "UTF-8");
+                    saveDyeticaInDB(html);
                 }
             }
         } catch (MalformedURLException e) {
@@ -113,7 +125,22 @@ public class DyeticaFragment extends Fragment {
         } catch (UnsupportedEncodingException e) {
             Log.e("DyeticaFragment", "Error unsupported encoding in AttempDyetica: " + e.getMessage());
         }
-        return result.trim();
+        return html.trim();
+    }
+
+    private void saveDyeticaInDB(String result) {
+        Log.d("DyeticaFragment", "Entrando de saveDyeticaInDB: " );
+        String screen = getString(R.string.constant_dyetica);
+        Information information = dbManager.getInformation(screen);
+        if (null == information){
+            information = Information.getInstance(information);
+            information.setHtml(result);
+            information.setScreen(screen);
+            dbManager.addInformation(information);
+        } else {
+            information.setHtml(result);
+            dbManager.updateInformation(information);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -178,9 +205,8 @@ public class DyeticaFragment extends Fragment {
 
         @Override
         protected Map<String, String> doInBackground(URL... urls) {
-            ClientHTTP clientHTTP = new ClientHTTP();
-            Map<String, String> response = clientHTTP.makeHttpRequest(urls[0], "GET", "018da74ea8cbf87ce79ed34688960291", null);
-            Log.d("DyeticaFragment", "Closed Attemp");
+            SharedPreferences prefs = getActivity().getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            Map<String, String> response = ClientHTTP.makeHttpRequest(urls[0], "GET", prefs.getString("apiKey", ""), null);
             return response;
         }
 

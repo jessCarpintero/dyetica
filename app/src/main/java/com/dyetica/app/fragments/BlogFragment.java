@@ -1,14 +1,32 @@
 package com.dyetica.app.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.dyetica.app.R;
+import com.dyetica.app.persistence.ClientHTTP;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,16 +37,8 @@ import com.dyetica.app.R;
  * create an instance of this fragment.
  */
 public class BlogFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+    private WebView web;
 
     public BlogFragment() {
         // Required empty public constructor
@@ -45,27 +55,46 @@ public class BlogFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static BlogFragment newInstance(String param1, String param2) {
         BlogFragment fragment = new BlogFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blog, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_blog, container, false);
+        AttemptBlog attemptBlog = new AttemptBlog();
+        try {
+            web = (WebView) rootView.findViewById(R.id.webViewBlog);
+            web.setInitialScale(1);
+            web.getSettings().setUseWideViewPort(true);
+            web.getSettings().setBuiltInZoomControls(true);
+            web.setWebViewClient(new WebViewClient());
+
+            String htmlData = null;
+
+            htmlData = attemptBlog.execute((Void) null).get();
+
+            if (("").equals(htmlData)){
+                Log.d("NlogFragment", "Dentro de '' ");
+
+                web.loadUrl("http://dyetica.com/blog");
+            } else {
+                Log.d("NlogFragment", "htmldata con valor ");
+
+                web.loadDataWithBaseURL("file:///android_asset/.", htmlData, "text/html", "UTF-8", null);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return rootView;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,4 +135,26 @@ public class BlogFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    public class AttemptBlog extends AsyncTask<Void, Void, String> {
+        private ProgressDialog pDialog;
+
+
+        @Override
+        protected String doInBackground(Void... urls) {
+            Document doc;
+            String html = "";
+            try {
+                doc = Jsoup.connect("http://dyetica.com/blog").get();
+                doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "app-style.css");
+                html = doc.outerHtml();
+                Log.d("BlogFragment", "Dentro del attempBLOG: " + html);
+                return html;
+            } catch (IOException e) {
+                Log.e("BlogFragment", "Error execution Attemp Blog");
+                return html;
+            }
+        }
+
+        }
 }

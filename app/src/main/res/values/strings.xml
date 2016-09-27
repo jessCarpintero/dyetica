@@ -14,11 +14,11 @@
     <string name="dialog_get_data">Obteniendo datos</string>
 
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Abriendo menú</string>
+    <string name="navigation_drawer_close">Cerrando menú</string>
 
     <string name="action_settings">Ajustes</string>
-        <string name="title_activity_login">Iniciar sesión</string>
+        <string name="title_activity_login">Dyética</string>
 
     <!-- String related status code -->
     <string name="status_200">200</string>
@@ -39,22 +39,57 @@
     <string name="error_invalid_password">La contraseña es demasiado corta</string>
     <string name="error_incorrect_password">Contraseña incorrecta</string>
     <string name="error_field_required">Campo requerido</string>
+    <string name="error_incorrect_date">Fecha no válida (Formato: dd-mm-aaaa)</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
     <string name="attempt_login">"Iniciando sesión ..."</string>
 
+    <!-- Strings related to profile -->
+    <string name="prompt_name">Nombre</string>
+    <string name="prompt_surname1">Primer apellido</string>
+    <string name="prompt_surname2">Segundo apellido</string>
+    <string name="prompt_birthay_day">Fecha de nacimiento</string>
+    <string name="prompt_postal_code">Código postal</string>
+    <string name="prompt_username">Nombre de usuario</string>
+    <string name="prompt_email">E-mail</string>
+    <string name="error_sync_server">Error al actualizar los datos con el servidor</string>
+
     <!-- String related url http -->
     <string name="url_bases_and_objectives">http://www.probasmar.es/dyetica3/app/restapi/basesyobjetivos</string>
     <string name="url_dyetica">http://www.probasmar.es/dyetica3/app/restapi/dyetica</string>
     <string name="url_login">http://www.probasmar.es/dyetica3/app/restapi/login</string>
+    <string name="url_update_profile">http://www.probasmar.es/dyetica3/app/restapi/updateinfo</string>
 
-    <!-- Variables response http -->
+
+    <!-- Values response http -->
     <string name="status">status</string>
     <string name="error">error</string>
     <string name="message">message</string>
 
+    <!-- DBManager -->
+    <string name="error_create">Error creando la tabla en base de datos</string><!-- Errors DatabaseHandler -->
+    <string name="dropError">Error eliminando las tablas de la base de datos</string>
+    <string name="createError">Error al crear las tablas en base de datos</string>
+    <string name="insertUserError">Error no se ha podido insertar en base de datos los datos del usuario</string>
+    <string name="insertError">Error no se ha podido insertar en base de datos</string>
+    <string name="deleteError">Error al eliminar la tabla en base de datos</string>
+    <string name="dateError">Error al formatear la fecha</string>
+    <string name="update_successful">Los datos han sido modificados correctamente</string>
+    <string name="update_profile_error">Error al guardar los datos</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- Strings related to dyetica and bases and objectives -->
+    <string name="constant_dyetica">DYETICA</string>
+    <string name="constant_base_and_objectives">BANDO</string>
+    <string name="update_error">Error al actualizar la tabla</string>
+    <string name="selectError">Error no se ha podido ejecutar la consulta</string>
+
+    <!-- String from styles-->
+    <string name="bold">bold</string>
+
+    <!-- Strings related to MainActivity -->
+    <string name="balancerPlus">Equilibrador Plus</string>
+    <string name="dietetic_profile">Perfil dietético</string>
+
 </resources>

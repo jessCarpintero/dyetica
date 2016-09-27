@@ -1,13 +1,16 @@
 package com.dyetica.app;
 
-import android.app.ActionBar;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
-import android.text.AutoText;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,29 +20,61 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TabHost;
+import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.dyetica.app.fragments.BalancerPlusFragment;
 import com.dyetica.app.fragments.BasesObjectivesFragment;
 import com.dyetica.app.fragments.BlogFragment;
+import com.dyetica.app.fragments.DieteticProfileFragment;
 import com.dyetica.app.fragments.DyeticaFragment;
 import com.dyetica.app.fragments.ForoFragment;
 import com.dyetica.app.fragments.HelpFragment;
 import com.dyetica.app.fragments.ProfileFragment;
+import com.dyetica.app.model.User;
+import com.dyetica.app.persistence.DBManager;
 
 public class MainActivity extends AppCompatActivity
         implements BasesObjectivesFragment.OnFragmentInteractionListener, BlogFragment.OnFragmentInteractionListener,
         ForoFragment.OnFragmentInteractionListener, HelpFragment.OnFragmentInteractionListener,
         BalancerPlusFragment.OnFragmentInteractionListener, DyeticaFragment.OnFragmentInteractionListener,
-        ProfileFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
+        ProfileFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener,
+        DieteticProfileFragment.OnFragmentInteractionListener{
 
-    DrawerLayout drawer;
-    Toolbar toolbar;
-    ActionBarDrawerToggle toggle;
+    private static final String CURRENT_FRAGMENT_KEY = "current_fragment";
+    private static final String TAB_BALANCER_PLUS = "tab_balancer_plus";
+    private static final String TAB_DIETETIC_PROFILE = "tab_dietetic_profile";
 
-   @Override
+    private TextView mUserName;
+    private TextView mUserEmail;
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle toggle;
+    private DBManager dbManager;
+    private FragmentTabHost tabHost;
+    private int currentFragment;
+    private SharedPreferences prefs;
+
+
+    //Fragments
+    private BalancerPlusFragment balancerPlusFragment;
+    private DieteticProfileFragment dieteticProfileFragment;
+    private ProfileFragment profileFragment;
+    private DyeticaFragment dyeticaFragment;
+    private BasesObjectivesFragment basesObjectivesFragment;
+    private BlogFragment blogFragment;
+    private ForoFragment foroFragment;
+    private HelpFragment helpFragment;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        prefs = this.getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+        dbManager = DBManager.getInstance(this);
+        dbManager.getWritableDatabase();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,12 +83,70 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        createTabHost();
+        createIconAndTextUser();
 
+       if(savedInstanceState != null) {
+           currentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT_KEY);
+           Log.d("MainActivity", "Dentro de savedInstanceState != null, valor de current_fragment: " + currentFragment);
+       } else {
+           Log.d("MainActivity", "valor de current_fragment PRIMERA VEZ: " + currentFragment);
+           currentFragment = 0;
+       }
+    }
+
+    private void createTabHost(){
+        tabHost= (FragmentTabHost) findViewById(android.R.id.tabhost);
+        tabHost.setup(this,
+                getSupportFragmentManager(),android.R.id.tabcontent);
+        tabHost.addTab(tabHost.newTabSpec(TAB_BALANCER_PLUS).setIndicator(getString(R.string.balancerPlus)),
+                BalancerPlusFragment.class, null);
+        tabHost.addTab(tabHost.newTabSpec(TAB_DIETETIC_PROFILE).setIndicator(getString(R.string.dietetic_profile)),
+                DieteticProfileFragment.class, null);
+
+
+
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tab) {
+                switch (tab){
+                    case TAB_BALANCER_PLUS:
+                        setFragment(0);
+                        break;
+                    case TAB_DIETETIC_PROFILE:
+                        setFragment(7);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void createIconAndTextUser(){
+        User user = dbManager.getUser(prefs.getInt("idUser", 0));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //@drawable/bg_menu_dyetica
 
-       //First fragment
-       setFragment(0);
+        View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        headerLayout.setBackgroundResource(R.drawable.bg_menu_dyetica);
+
+        //TODO: Revisar porque no recoge los elementos como toca
+        mUserName = (TextView) headerLayout.findViewById(R.id.textViewUserName);
+        mUserName.setText(user.getUsername());
+        mUserEmail = (TextView) headerLayout.findViewById(R.id.textViewUserEmail);
+        mUserEmail.setText(user.getEmail());
+
+        TextDrawable.IShapeBuilder drawable1 = TextDrawable.builder();
+        Log.d("MainActivity", "Valor de drawable1 " + drawable1.toString());
+        TextDrawable drawable = drawable1.buildRound(user.getUsername().substring(0,1).toUpperCase(), Color.BLUE);
+
+
+        Log.d("MainActivity", "Valor de drawable1 " + drawable.toString());
+
+        ImageView image = (ImageView) headerLayout.findViewById(R.id.imageViewLogoUser);
+        Log.d("MainActivity", "Valor de drawable1 " + image.toString());
+
+        image.setImageDrawable(drawable);
     }
 
     @Override
@@ -69,6 +162,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        Log.d("MainAcrivity", "Demtrp de onCreateOptionsMenu");
+        //TODO: Aqui iran diferentes if para los fragments que necesiten tener botones en el toolbar
+        if (!drawer.isDrawerOpen(GravityCompat.START) && currentFragment == 0 ) {
+            restoreActionBar(getString(R.string.app_name));
+            tabHost.setVisibility(View.VISIBLE);
+        } else if (!drawer.isDrawerOpen(GravityCompat.START) && currentFragment == 1) {
+            restoreActionBar(getString(R.string.title_profile));
+            tabHost.setVisibility(View.INVISIBLE);
+        }  else if (!drawer.isDrawerOpen(GravityCompat.START) && currentFragment == 2) {
+            restoreActionBar(getString(R.string.title_dyetica));
+            tabHost.setVisibility(View.INVISIBLE);
+        }  else if (!drawer.isDrawerOpen(GravityCompat.START) && currentFragment == 3) {
+            restoreActionBar(getString(R.string.title_bases_and_objectives));
+            tabHost.setVisibility(View.INVISIBLE);
+        }  else if (!drawer.isDrawerOpen(GravityCompat.START) && currentFragment == 4) {
+            restoreActionBar(getString(R.string.title_blog));
+            tabHost.setVisibility(View.INVISIBLE);
+        }  else if (!drawer.isDrawerOpen(GravityCompat.START) && currentFragment == 5) {
+            restoreActionBar(getString(R.string.title_foro));
+            tabHost.setVisibility(View.INVISIBLE);
+        }  else if (!drawer.isDrawerOpen(GravityCompat.START) && currentFragment == 6) {
+            restoreActionBar(getString(R.string.title_help));
+            tabHost.setVisibility(View.INVISIBLE);
+        }
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -78,6 +195,7 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        //TODO: Aqui se hace la lógica de los botones del toolbar
         switch (item.getItemId()) {
             case android.R.id.home:
                 drawer.openDrawer(GravityCompat.START);
@@ -132,65 +250,75 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setFragment(int position) {
-        FragmentManager fragmentManager;
-        FragmentTransaction fragmentTransaction;
+        Bundle bundle = getIntent().getExtras();
+        Log.d("MainActivity", "Valor de position: " + position);
+
+        if (null == bundle) {
+            bundle = new Bundle();
+        }
+
+        //Necessary to save the state
+        currentFragment = position;
+
         switch (position) {
             case 0:
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                BalancerPlusFragment balancerPlusFragment = new BalancerPlusFragment();
-                fragmentTransaction.replace(R.id.all_fragments, balancerPlusFragment);
-                fragmentTransaction.commit();
-                restoreActionBar(getString(R.string.app_name));
+                if (null == balancerPlusFragment) balancerPlusFragment = new BalancerPlusFragment();
+                replaceFragment(balancerPlusFragment, bundle, getString(R.string.app_name));
+                tabHost.setVisibility(View.VISIBLE);
                 break;
             case 1:
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                ProfileFragment profileFragment = new ProfileFragment();
-                fragmentTransaction.replace(R.id.all_fragments, profileFragment);
-                fragmentTransaction.commit();
-                restoreActionBar(getString(R.string.title_profile));
+                if (null == profileFragment) profileFragment = new ProfileFragment();
+                bundle.putInt("idUser", prefs.getInt("idUser", 0));
+                replaceFragment(profileFragment, bundle, getString(R.string.title_profile));
+                tabHost.setVisibility(View.INVISIBLE);
                 break;
             case 2:
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                DyeticaFragment dyeticaFragment = new DyeticaFragment();
-                fragmentTransaction.replace(R.id.all_fragments, dyeticaFragment);
-                fragmentTransaction.commit();
-                restoreActionBar(getString(R.string.title_dyetica));
+                if (null == dyeticaFragment) dyeticaFragment = new DyeticaFragment();
+                replaceFragment(dyeticaFragment, bundle, getString(R.string.title_dyetica));
+                tabHost.setVisibility(View.INVISIBLE);
                 break;
             case 3:
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                BasesObjectivesFragment basesObjectivesFragment = new BasesObjectivesFragment();
-                fragmentTransaction.replace(R.id.all_fragments, basesObjectivesFragment);
-                fragmentTransaction.commit();
-                restoreActionBar(getString(R.string.title_bases_and_objectives));
+                if (null == basesObjectivesFragment) basesObjectivesFragment = new BasesObjectivesFragment();
+                replaceFragment(basesObjectivesFragment, bundle, getString(R.string.title_bases_and_objectives));
+                tabHost.setVisibility(View.INVISIBLE);
                 break;
             case 4:
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                BlogFragment blogFragment = new BlogFragment();
-                fragmentTransaction.replace(R.id.all_fragments, blogFragment);
-                fragmentTransaction.commit();
-                restoreActionBar(getString(R.string.title_blog));
+                if (null == blogFragment) blogFragment = new BlogFragment();
+                replaceFragment(blogFragment, bundle, getString(R.string.title_blog));
+                tabHost.setVisibility(View.INVISIBLE);
                 break;
             case 5:
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                ForoFragment foroFragment = new ForoFragment();
-                fragmentTransaction.replace(R.id.all_fragments, foroFragment);
-                fragmentTransaction.commit();
-                restoreActionBar(getString(R.string.title_foro));
+                if (null == foroFragment) foroFragment = new ForoFragment();
+                replaceFragment(foroFragment, bundle, getString(R.string.title_foro));
+                tabHost.setVisibility(View.INVISIBLE);
                 break;
             case 6:
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                HelpFragment helpFragment = new HelpFragment();
-                fragmentTransaction.replace(R.id.all_fragments, helpFragment);
-                fragmentTransaction.commit();
-                restoreActionBar(getString(R.string.title_help));
+                if (null == helpFragment) helpFragment = new HelpFragment();
+                replaceFragment(helpFragment, bundle, getString(R.string.title_help));
+                tabHost.setVisibility(View.INVISIBLE);
                 break;
+            case 7:
+                if (null == dieteticProfileFragment) dieteticProfileFragment = new DieteticProfileFragment();
+                replaceFragment(dieteticProfileFragment, bundle, getString(R.string.app_name));
+                tabHost.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private void replaceFragment(Fragment newFragment, Bundle bundle, String titleToolbar) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (!newFragment.isVisible()) {
+            Log.d("MainActivity", "REPLACE FRAGMENTE: " + newFragment.toString());
+
+            if (bundle != null) {
+                newFragment.setArguments(bundle);
+                Bundle clearBundle = null;
+                getIntent().replaceExtras(clearBundle);
+            }
+            fragmentTransaction.replace(R.id.all_fragments, newFragment);
+            fragmentTransaction.commit();
+            restoreActionBar(titleToolbar);
         }
     }
 
@@ -198,7 +326,20 @@ public class MainActivity extends AppCompatActivity
      * Resets the status bar
      */
     public void restoreActionBar(String mTitle) {
+        Log.d("MainActivity", "MODIFICAMOS EL TOOLBAR: " + mTitle );
         toolbar.setTitle(mTitle);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_FRAGMENT_KEY, currentFragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        currentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT_KEY);
     }
 
     @Override

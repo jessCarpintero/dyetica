@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_login_vertical_margin"
+    android:paddingLeft="@dimen/activity_login_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.dyetica.app.LoginActivity">
@@ -20,13 +20,6 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <ImageView
-        android:layout_width="385dp"
-        android:layout_height="190dp"
-        android:src="@drawable/logo_dyetica"
-        android:paddingBottom="@dimen/padding_bottom_image_logo_login"
-        android:layout_gravity="center_horizontal" />
-
     <ScrollView
         android:id="@+id/login_scroll_form"
         android:layout_width="match_parent"
@@ -37,54 +30,79 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
+        <ImageView
+        android:layout_width="385dp"
+        android:layout_height="190dp"
+        android:src="@drawable/logo_dyetica"
+        android:paddingBottom="@dimen/padding_bottom_image_logo_login"
+        android:layout_marginBottom="@dimen/margin_bottom_image_logo_login"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="Usuario"
+                >
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:hint="Usuario"
                 android:ems="10"
+                android:paddingBottom="@dimen/activity_padding_bottom"
                 android:id="@+id/user_text" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_password"
+                >
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_password"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:layout_marginTop="16dp"
-                android:singleLine="true" />
+                android:layout_marginTop="16dp"/>
             </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="175dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:layout_marginLeft="80dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginTop="@dimen/button_margin"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                android:textStyle="normal"
+                android:layout_gravity="center_horizontal"
+                android:theme="@style/ButtonApp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/link_register"
                 android:layout_gravity="center_horizontal"
-                android:paddingBottom="@dimen/activity_padding_bottom"
-                android:text="¿No estás todavía registrado? Accede a la web" />
+                android:linksClickable="true"
+                android:layout_marginTop="@dimen/button_margin"
+                />
 
         </LinearLayout>
     </ScrollView>

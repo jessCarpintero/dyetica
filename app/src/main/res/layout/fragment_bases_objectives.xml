@@ -4,21 +4,29 @@
     android:layout_height="match_parent"
     tools:context="com.dyetica.app.fragments.BasesObjectivesFragment">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo_dyetica"
-        android:id="@+id/imageViewBAndO" />
-
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/scrollViewBAndO"
-        android:layout_marginTop="135dp">
-        <TextView
-            android:id="@+id/text_bases_and_objectives"
+        android:id="@+id/scrollViewBAndO">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Estoy en BASES Y OBJETIVOS" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="1dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo_dyetica"
+                android:id="@+id/imageViewBAndO"
+                android:paddingBottom="20dp"
+                android:layout_gravity="top"/>
+
+            <TextView
+                android:id="@+id/text_bases_and_objectives"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Estoy en BASES Y OBJETIVOS" />
+        </LinearLayout>
     </ScrollView>
 </FrameLayout>

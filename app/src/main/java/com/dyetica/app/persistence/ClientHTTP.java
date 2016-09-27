@@ -24,13 +24,24 @@ import java.util.Map;
  */
 public class ClientHTTP {
 
-
+    //private static ClientHTTP clientHTTP;
     private static final String TAG_MESSAGE = "message";
     private static final String TAG_ERROR = "error";
     private static final String TAG_STATUS = "status";
 
+   // public static ClientHTTP getInstance(){
+     //   if (null == clientHTTP){
+       //     clientHTTP = new ClientHTTP();
+        //}
+        //return clientHTTP;
+    //}
 
-    public Map<String, String> makeHttpRequest(URL url, String method, String authorization, String params) {
+    private ClientHTTP(){
+
+    }
+
+
+    public static Map<String, String> makeHttpRequest(URL url, String method, String authorization, String params) {
         //Establishing a connection
         HttpURLConnection con = null;
         try {
@@ -66,15 +77,13 @@ public class ClientHTTP {
     }
 
 
-    private Map<String, String> getResponse(HttpURLConnection con){
+    private static Map<String, String> getResponse(HttpURLConnection con){
         JSONObject jsonObject;
         String error = "", message = "";
         Map<String, String> reponse =  new HashMap<String, String>();
         try {
             // Get the state of the resource
             int statusCode = con.getResponseCode();
-
-            Log.d("ClientHTTP", "Valor de statusCode " + statusCode);
 
             if (statusCode != 200){
                 Log.e("ClientHTTP", "Error server with status code: " + statusCode);
@@ -88,21 +97,15 @@ public class ClientHTTP {
                 }
                 inputStream.close();
 
-                Log.d("ClientHTTP", "Closed inputStream");
-
-
                 // try parse the string to a JSON object
                 jsonObject = new JSONObject(sb.toString());
 
                 // json error element
                 error = jsonObject.getString(TAG_ERROR);
-                Log.d("ClientHTTP", "Valor de error: " + error);
 
                 if (error == "false") {
-                    Log.d("ClientHTTP", "Message Success!  " + jsonObject.toString());
                     message = jsonObject.getString(TAG_MESSAGE);
                 } else {
-                    Log.d("ClientHTTP", "Message Failure! "  + jsonObject.getString(TAG_MESSAGE));
                     message = jsonObject.getString(TAG_MESSAGE);
                 }
             }
@@ -120,20 +123,18 @@ public class ClientHTTP {
         return reponse;
     }
 
-    private void paramsUrl(HttpURLConnection con, String params){
+    private static void paramsUrl(HttpURLConnection con, String params){
         try {
             OutputStream os = con.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
-            Log.d("ClientHTTP", "Valor de query: " + params);
             writer.write(params);
             writer.flush();
             writer.close();
             os.close();
         } catch (IOException e) {
-            e.printStackTrace();
+           Log.e("ClientHTTP","Error ");
         }
-        Log.d("ClientHTTP", "Closed WRITE and OS");
     }
 
 }

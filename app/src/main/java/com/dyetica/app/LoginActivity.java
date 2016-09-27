@@ -3,7 +3,6 @@ package com.dyetica.app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,29 +21,26 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dyetica.app.model.User;
 import com.dyetica.app.persistence.ClientHTTP;
+import com.dyetica.app.persistence.DBManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,25 +69,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private TextView mLinkRegisterView;
     private View mProgressView;
     private View mLoginScrollFormView;
-
-    /**
-     * Parameters preferences
-     */
-    private SharedPreferences _prefs;
-    private SharedPreferences.Editor _prefsEditor;
+    private DBManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        _prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
-        _prefsEditor = _prefs.edit();
+        dbManager = DBManager.getInstance(this);
+
         // Set up the login form.
         mUserNameView = (EditText) findViewById(R.id.user_text);
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
+        //Link to http://dyetica.com/hazte-socio
         mLinkRegisterView = (TextView) findViewById(R.id.link_register);
+        mLinkRegisterView.setText(Html.fromHtml("¿No estás registrado todavía? <a href=\"http://dyetica.com/hazte-socio\">Accede a la web </a>"));
+        mLinkRegisterView.setMovementMethod(LinkMovementMethod.getInstance());
 
         Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new OnClickListener() {
@@ -105,50 +99,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mUserNameView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -156,7 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
         Map<String, String> success = new HashMap<>();
-        Boolean error = true;
+        boolean error = true;
 
         if (mAuthTask != null) {
             return;
@@ -170,16 +120,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String userName = mUserNameView.getText().toString().trim();
         String password = mPasswordView.getText().toString().trim();
 
-        Log.d("LoginActivity", "Valor de userName: " + userName);
-        Log.d("LoginActivity", "Valor de contraseña: " + password);
-
-
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
-            Log.d("LoginActivity", "contraseña vacia");
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
@@ -187,47 +132,35 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(userName)) {
-            Log.d("LoginActivity", "nombre de usuario vacio");
-
             mUserNameView.setError(getString(R.string.error_field_required));
             focusView = mUserNameView;
             cancel = true;
         }
 
         if (cancel) {
-            Log.d("LoginActivity", "Dentro de cancel");
-
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Log.d("LoginActivity", "No deberia ESTA AQUI");
-
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new AttemptLogin(userName, password);
             try {
                 success = mAuthTask.execute((Void) null).get();
-                Log.d("VERBOSE", "Despues de success: " + success.toString());
-
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.e("LoginActivity", "Attempt login have been interripted: " + e.getMessage());
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                Log.e("VERBOSE", "Attempt login have been in execution error: " + e.getMessage());
             }
 
-
             error = Boolean.parseBoolean(success.get(getString(R.string.error)));
-            Log.d("VERBOSE", "Valor de ERROR: " + error);
-
-            if (!error) {
-                Log.d("VERBOSE", "Valor de ERROR: " + error);
+           if (!error) {
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 finish();
                 startActivity(i);
             } else {
-                Toast.makeText(this, success.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
+               Toast.makeText(this, success.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -313,7 +246,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     class AttemptLogin extends AsyncTask<Void, Void, Map<String, String>> {
         private final String mUserName;
         private final String mPassword;
-        private String error, message, statusCode, params;
+        private String error, message, statusCode;
+        private StringBuilder params = new StringBuilder();
         private Map<String, String> success = new HashMap<>();
 
         AttemptLogin(String username, String password) {
@@ -327,64 +261,38 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Check for success tag
             try {
                 // Building Parameters
-                Log.v("VERBOSE", "VAlor de username" + mUserName);
-                Log.v("VERBOSE", "VAlor de pass" + mPassword);
-                Log.v("VERBOSE", "url" + getString(R.string.url_login));
-                params = "username=" + mUserName + "&password=" + encode64(mPassword);
-                Log.d("request!", "starting, valor de params: " + params);
+                params.append("username=").append(mUserName).append("&password=").append(encode64(mPassword));
 
                 // getting product details by making HTTP request
-                ClientHTTP clientHTTP = new ClientHTTP();
-                Map<String, String> response = clientHTTP.makeHttpRequest(new URL(getString(R.string.url_login)), "POST", "", params);
+                Map<String, String> response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_login)), "POST", "", params.toString());
 
                 // check your log for json response
                 Log.d("VERBOSE", response.toString());
                 statusCode = response.get(getString(R.string.status));
                 success.put(getString(R.string.status), statusCode);
                 if (!getString(R.string.status_200).equals(statusCode)){
-                    Log.d("VERBOSE", "ERROR distinto de 200");
                     success.put(getString(R.string.error), "true");
                     success.put(getString(R.string.message), getString(R.string.error_connection));
                 } else {
-                    Log.d("VERBOSE", "Status igual 200");
                     error = response.get("error");
                     message = response.get("message");
                     if (error == "false") {
                         Log.d("VERBOSE", "Valor de mensaje: " + message);
-                        JSONObject json = new JSONObject(message);
-                        saveUserDBAndPreferences(json);
-                       // if (_prefs.getInt("idUserCurrent", 0) == idUser || _prefs.getInt("idUserCurrent", 0) == 0)
-                         //   _prefsEditor.putInt("idUserCurrent", idUser);
-                        //else {
-                          //  _prefsEditor.putInt("idUserOld", _prefs.getInt("idUserCurrent", 0));
-                        //     _prefsEditor.putInt("idUserCurrent", idUser);
-                        //   }
-                        //    if (remember.isChecked()) {
-                        //      _prefsEditor.putString("email", mail.getText().toString().trim());
-                        //      _prefsEditor.putString("password", pass.getText().toString().trim());
-                        //    } else {
-                        //     _prefsEditor.putString("email", "");
-                        //      _prefsEditor.putString("password", "");
-                        //   }
-                        //   _prefsEditor.commit();
-                        //  if (dbManager.getUser(idUser) == null) {
-                        //       dbManager.addUser(new UserVO(idUser, json.getString("email"), json.getString("name"), json.getString("apiKey"), json.getString("createdAt"), "", 0, 0));
-                        //    }
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        User user = User.getInstance(gson.fromJson(message, User.class));
+                        savePreferences(user);
+                        if (dbManager.getUser(user.getId()) == null) {
+                            dbManager.addUser(user);
+                        } else {
+                            dbManager.updateUser(user);
+                        }
                     }
-                    Log.d("VERBOSE", "Escribiendo success");
-
                     success.put(getString(R.string.error), error);
                     success.put(getString(R.string.message), message);
-                    Log.d("VERBOSE", "Terminando success");
-
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            Log.d("VERBOSE", "Enviando success");
-
             return success;
         }
 
@@ -402,11 +310,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return Base64.encodeToString(mPassword.getBytes(), Base64.DEFAULT);
         }
 
-        private void saveUserDBAndPreferences(JSONObject jsonObject){
+        private void savePreferences(User user){
+            SharedPreferences prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = prefs.edit();
 
+            prefsEditor.putInt("idUser", user.getId());
+            prefsEditor.putString("apiKey", user.getApiKey());
+            prefsEditor.commit();
         }
-
-
     }
 
 

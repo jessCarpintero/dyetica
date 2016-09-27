@@ -7,24 +7,35 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.dyetica.app.R;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ForoFragment.OnFragmentInteractionListener} interface
+ * {@link DieteticProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ForoFragment#newInstance} factory method to
+ * Use the {@link DieteticProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ForoFragment extends Fragment {
+public class DieteticProfileFragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private TextView textView;
+    private TextView lastUpdateDate;
+
 
     private OnFragmentInteractionListener mListener;
 
-    public ForoFragment() {
+    public DieteticProfileFragment() {
         // Required empty public constructor
     }
 
@@ -34,34 +45,38 @@ public class ForoFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ForoFragment.
+     * @return A new instance of fragment DieteticProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ForoFragment newInstance(String param1, String param2) {
-        ForoFragment fragment = new ForoFragment();
+    public static DieteticProfileFragment newInstance(String param1, String param2) {
+        DieteticProfileFragment fragment = new DieteticProfileFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_foro, container, false);
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_dietetic_profile, container, false);
+        textView = (TextView) rootView.findViewById(R.id.dietetic_profile_text);
+        textView.setText("Dietetic profile");
 
-        WebView web = (WebView) rootView.findViewById(R.id.webViewForo);
-        web.setWebViewClient(new WebViewClient());
-        web.loadUrl("http://dyetica.com/foro/categorias");
-        web.setInitialScale(1);
-        web.getSettings().setUseWideViewPort(true);
-        web.getSettings().setBuiltInZoomControls(true);
-
+        lastUpdateDate = (TextView) rootView.findViewById(R.id.last_update_date);
+        lastUpdateDate.setText("Fecha de la última actualización: "+ " PONER FECHA");
         return rootView;
-
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

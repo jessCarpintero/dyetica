@@ -3,6 +3,7 @@ package com.dyetica.app.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import android.widget.Toast;
 
 import com.dyetica.app.LoginActivity;
 import com.dyetica.app.R;
+import com.dyetica.app.model.Information;
 import com.dyetica.app.persistence.ClientHTTP;
+import com.dyetica.app.persistence.DBManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -36,6 +39,8 @@ import java.util.concurrent.ExecutionException;
 public class BasesObjectivesFragment extends Fragment {
     private ProgressDialog pDialog;
     private String mResultBasesObjectives;
+    private DBManager dbManager;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,8 +69,8 @@ public class BasesObjectivesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Set fragment_attractions.xml to be the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_bases_objectives, container, false);
-
-        mResultBasesObjectives = getResultBasesAndObjectives();
+        dbManager = DBManager.getInstance(getActivity());
+        mResultBasesObjectives = getHtmlBasesAndObjectives();
 
         TextView mTextBasesObjectives = (TextView) rootView.findViewById(R.id.text_bases_and_objectives);
         mTextBasesObjectives.setText(Html.fromHtml(mResultBasesObjectives));
@@ -79,8 +84,8 @@ public class BasesObjectivesFragment extends Fragment {
      *
      * @return result
      */
-    private String getResultBasesAndObjectives(){
-        String result = "", statusCode = "", message = "";
+    private String getHtmlBasesAndObjectives(){
+        String html = "", statusCode = "", message = "";
         Boolean error;
         Map<String, String> resultBasesObjectives;
         try {
@@ -95,10 +100,16 @@ public class BasesObjectivesFragment extends Fragment {
                 startActivity(i);
             } else if (getString(R.string.status_200).equals(statusCode)) {
                 if (error){
-                    //TODO: Preguntar a BD local si tiene los datos en caso de no tenerlos mostrar mensaje de error
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    Information information = dbManager.getInformation(getString(R.string.constant_base_and_objectives));
+                    if (null == information){
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.e("BasesObjectivesFragment", "Valor de base de datos, error de servidor: " + information.getHtml());
+                        html = information.getHtml();
+                    }
                 } else {
-                    result = new String(message.getBytes(),  "UTF-8");
+                    html = new String(message.getBytes(),  "UTF-8");
+                    saveBasesObjectivesInDB(html);
                 }
             }
         } catch (MalformedURLException e) {
@@ -110,7 +121,22 @@ public class BasesObjectivesFragment extends Fragment {
         } catch (UnsupportedEncodingException e) {
             Log.e("BasesObjectivesFragment", "Error unsupported encoding in AttemptBasesAndObjectives: " + e.getMessage());
         }
-        return result.trim();
+        return html.trim();
+    }
+
+    private void saveBasesObjectivesInDB(String result) {
+        Log.d("BasesObjectivesFragment", "Entrando de saveBasesObjectivesInDB: " );
+        String screen = getString(R.string.constant_base_and_objectives);
+        Information information = dbManager.getInformation(screen);
+        if (null == information){
+            information = Information.getInstance(information);
+            information.setHtml(result);
+            information.setScreen(screen);
+            dbManager.addInformation(information);
+        } else {
+            information.setHtml(result);
+            dbManager.updateInformation(information);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -175,9 +201,8 @@ public class BasesObjectivesFragment extends Fragment {
 
         @Override
         protected Map<String, String> doInBackground(URL... urls) {
-
-            ClientHTTP clientHTTP = new ClientHTTP();
-            return clientHTTP.makeHttpRequest(urls[0], "GET", "018da74ea8cbf87ce79ed34688960291", null);
+            SharedPreferences prefs = getActivity().getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            return ClientHTTP.makeHttpRequest(urls[0], "GET", prefs.getString("apiKey", ""), null);
         }
 
         /**
