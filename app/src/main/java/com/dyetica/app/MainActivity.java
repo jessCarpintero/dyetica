@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity
        }
     }
 
+    /*Method that create TabHost */
     private void createTabHost(){
         tabHost= (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabHost.setup(this,
@@ -121,16 +122,16 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+
+    /*Method that create header the navigation drawer, add username, email and icon user*/
     private void createIconAndTextUser(){
         User user = dbManager.getUser(prefs.getInt("idUser", 0));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //@drawable/bg_menu_dyetica
 
         View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_main);
         headerLayout.setBackgroundResource(R.drawable.bg_menu_dyetica);
 
-        //TODO: Revisar porque no recoge los elementos como toca
         mUserName = (TextView) headerLayout.findViewById(R.id.textViewUserName);
         mUserName.setText(user.getUsername());
         mUserEmail = (TextView) headerLayout.findViewById(R.id.textViewUserEmail);
