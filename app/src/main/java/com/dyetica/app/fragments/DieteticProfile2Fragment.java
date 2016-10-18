@@ -8,41 +8,35 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dyetica.app.R;
 import com.dyetica.app.model.DieteticProfile;
 import com.dyetica.app.persistence.DBManager;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link DieteticProfileFragment.OnFragmentInteractionListener} interface
+ * {@link DieteticProfile2Fragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DieteticProfileFragment#newInstance} factory method to
+ * Use the {@link DieteticProfile2Fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DieteticProfileFragment extends Fragment {
+public class DieteticProfile2Fragment extends Fragment {
     private static final String ID_USER = "idUser";
-    private static final int ID_PROFILE = 1;
+    private static final int ID_PROFILE = 2;
 
     private int idUser;
-    private TextView title;
-    private TextView titleNew;
-    private TextView lastUpdateDate;
-    private TextView contentNew;
-    private Button createProfileDietetic;
 
+    // TODO: Rename and change types of parameters
+    private TextView dietetic_profile2_text;
+    private TextView lastUpdateDateProfile2;
     private DBManager dbManager;
     private DieteticProfile dieteticProfile;
 
     private OnFragmentInteractionListener mListener;
 
-    public DieteticProfileFragment() {
+    public DieteticProfile2Fragment() {
         // Required empty public constructor
     }
 
@@ -52,11 +46,11 @@ public class DieteticProfileFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment DieteticProfileFragment.
+     * @return A new instance of fragment DieteticProfile2Fragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DieteticProfileFragment newInstance(String param1, String param2) {
-        DieteticProfileFragment fragment = new DieteticProfileFragment();
+    public static DieteticProfile2Fragment newInstance(String param1, String param2) {
+        DieteticProfile2Fragment fragment = new DieteticProfile2Fragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -65,80 +59,42 @@ public class DieteticProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("DieteticProfileFragment", "DENTRO DE  ONCREATE: " );
-
-        if (getArguments() != null) {
-            Log.d("DieteticProfileFragment", " getArguments() ONCREATE " + getArguments().getInt(ID_USER));
-            idUser = getArguments().getInt(ID_USER);
-        }
-    }
+      }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_dietetic_profile, container, false);
-
-
-        Log.d("DieteticProfileFragment", "DENTRO DE  ONCREATEVIEW: " );
-
-        title = (TextView) rootView.findViewById(R.id.dietetic_profile_text);
-        lastUpdateDate = (TextView) rootView.findViewById(R.id.last_update_date);
-        titleNew = (TextView) rootView.findViewById(R.id.dietetic_profile_title_new);
-        contentNew = (TextView) rootView.findViewById(R.id.dietetic_profile_title_new);
-        createProfileDietetic = (Button) rootView.findViewById(R.id.button_profile_dietetic_new);
-
-
-
-        if (getArguments() != null) {
-            Log.d("DieteticProfileFragment", " getArguments() ONCREATEVIEW " +  getArguments().getInt(ID_USER));
+        // Inflate the layout for this fragment
+        View rootView = null;
+          if (getArguments() != null) {
+            Log.d("DieteticProfileFragment", " getArguments() 2 " +  getArguments().getInt(ID_USER));
             idUser = getArguments().getInt(ID_USER);
             dbManager = DBManager.getInstance(getActivity());
             dieteticProfile = dbManager.getDieteticProfile(idUser, ID_PROFILE);
 
-            Log.d("DieteticProfileFragment", "Valor de getDieteticProfile ONCREATE: " + dieteticProfile.getUser_id());
-
-
             if (dieteticProfile != null  ){
 
-                Log.d("DieteticProfileFragment", "dentro del IF " + dieteticProfile.getUser_id());
+                Log.d("DieteticProfileFragment", "dentro del IF 2 " + dieteticProfile.getUser_id());
+
+                rootView = inflater.inflate(R.layout.fragment_dietetic_profile2, container, false);
 
 
-                title.setText("Dietetic profile");
+                dietetic_profile2_text = (TextView) rootView.findViewById(R.id.dietetic_profile2_text);
+                dietetic_profile2_text.setText("Dietetic profile nº2");
 
-                lastUpdateDate.setText("Fecha de la última actualización: "+ " PONER FECHA");
+                lastUpdateDateProfile2 = (TextView) rootView.findViewById(R.id.last_update_date_profile2);
+                lastUpdateDateProfile2.setText("Fecha de la última actualización: "+ " PONER FECHA PROFILE 2");
+            } else {
+                Log.d("DieteticProfileFragment", "dentro del ELSE 2 INTERNO");
 
-                lastUpdateDate.setVisibility(View.INVISIBLE);
-
-                disableComponentsProfileDietetic();
-
+                rootView = inflater.inflate(R.layout.fragment_new_profile_dietetic, container, false);
             }
         } else {
+            Log.d("DieteticProfileFragment", "dentro del ELSE 2 ");
 
-            titleNew.setText("Dietetic profile NEW");
-
-            contentNew.setText("Crear perfil NEW");
-
-
-            enableComponentsProfileDietetic();
-
+            rootView = inflater.inflate(R.layout.fragment_new_profile_dietetic, container, false);
         }
         return rootView;
-    }
-
-    private void disableComponentsProfileDietetic() {
-        titleNew.setVisibility(View.INVISIBLE);
-        contentNew.setVisibility(View.INVISIBLE);
-        createProfileDietetic.setVisibility(View.INVISIBLE);
-        title.setVisibility(View.VISIBLE);
-        lastUpdateDate.setVisibility(View.VISIBLE);
-    }
-
-    private void enableComponentsProfileDietetic() {
-        titleNew.setVisibility(View.VISIBLE);
-        contentNew.setVisibility(View.VISIBLE);
-        createProfileDietetic.setVisibility(View.VISIBLE);
-        title.setVisibility(View.INVISIBLE);
-        lastUpdateDate.setVisibility(View.INVISIBLE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

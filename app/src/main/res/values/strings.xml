@@ -60,7 +60,8 @@
     <string name="url_dyetica">http://www.probasmar.es/dyetica3/app/restapi/dyetica</string>
     <string name="url_login">http://www.probasmar.es/dyetica3/app/restapi/login</string>
     <string name="url_update_profile">http://www.probasmar.es/dyetica3/app/restapi/updateinfo</string>
-
+    <string name="url_dietetic_profile">http://www.probasmar.es/dyetica3/app/restapi/perfil/</string>
+    <string name="url_personal_food">http://www.probasmar.es/dyetica3/app/restapi/personalfood/</string>
 
     <!-- Values response http -->
     <string name="status">status</string>
@@ -90,6 +91,10 @@
 
     <!-- Strings related to MainActivity -->
     <string name="balancerPlus">Equilibrador Plus</string>
-    <string name="dietetic_profile">Perfil dietético</string>
+    <string name="dietetic_profile">Perfil dietético Nº 1</string>
+    <string name="dietetic_profile_2">Perfil dietético Nº 2</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment dietetic 2</string>
 
 </resources>

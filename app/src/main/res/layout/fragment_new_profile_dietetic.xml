@@ -2,10 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/frame_layout_id"
+    android:id="@+id/frame_layout_new_id"
     tools:context="com.dyetica.app.fragments.DieteticProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dietetic_profile_title"
+        android:layout_gravity="center_horizontal|bottom" />
+
     <TextView
         android:id="@+id/dietetic_profile_text"
         android:layout_width="match_parent"
@@ -13,31 +19,11 @@
         android:gravity="center_vertical|center_horizontal"
          />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/last_update_date"
-        android:layout_gravity="center_horizontal|bottom" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dietetic_profile_title_new"
-        android:layout_gravity="center_horizontal|bottom" />
-
-    <TextView
-        android:id="@+id/dietetic_profile_new_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
-        />
-
     <Button
         android:layout_width="175dp"
         android:layout_height="wrap_content"
         android:text="Crear perfil"
-        android:id="@+id/button_profile_dietetic_new"
+        android:id="@+id/buttonProfileDietetic"
         android:layout_gravity="center_horizontal"
         android:theme="@style/ButtonApp"/>
-
 </FrameLayout>

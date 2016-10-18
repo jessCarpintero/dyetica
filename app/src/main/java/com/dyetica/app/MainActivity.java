@@ -3,8 +3,8 @@ package com.dyetica.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,24 +28,40 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.dyetica.app.fragments.BalancerPlusFragment;
 import com.dyetica.app.fragments.BasesObjectivesFragment;
 import com.dyetica.app.fragments.BlogFragment;
+import com.dyetica.app.fragments.DieteticProfile2Fragment;
 import com.dyetica.app.fragments.DieteticProfileFragment;
 import com.dyetica.app.fragments.DyeticaFragment;
 import com.dyetica.app.fragments.ForoFragment;
 import com.dyetica.app.fragments.HelpFragment;
 import com.dyetica.app.fragments.ProfileFragment;
+import com.dyetica.app.model.DieteticProfile;
 import com.dyetica.app.model.User;
+import com.dyetica.app.persistence.ClientHTTP;
 import com.dyetica.app.persistence.DBManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
         implements BasesObjectivesFragment.OnFragmentInteractionListener, BlogFragment.OnFragmentInteractionListener,
         ForoFragment.OnFragmentInteractionListener, HelpFragment.OnFragmentInteractionListener,
         BalancerPlusFragment.OnFragmentInteractionListener, DyeticaFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener,
-        DieteticProfileFragment.OnFragmentInteractionListener{
+        DieteticProfileFragment.OnFragmentInteractionListener,
+        DieteticProfile2Fragment.OnFragmentInteractionListener{
 
     private static final String CURRENT_FRAGMENT_KEY = "current_fragment";
     private static final String TAB_BALANCER_PLUS = "tab_balancer_plus";
     private static final String TAB_DIETETIC_PROFILE = "tab_dietetic_profile";
+    private static final String TAB_DIETETIC_PROFILE_2 = "tab_dietetic_profile_2";
 
     private TextView mUserName;
     private TextView mUserEmail;
@@ -56,11 +72,13 @@ public class MainActivity extends AppCompatActivity
     private FragmentTabHost tabHost;
     private int currentFragment;
     private SharedPreferences prefs;
+    private AttemptDieteticProfile mAuthTask = null;
 
 
     //Fragments
     private BalancerPlusFragment balancerPlusFragment;
     private DieteticProfileFragment dieteticProfileFragment;
+    private DieteticProfile2Fragment dieteticProfile2Fragment;
     private ProfileFragment profileFragment;
     private DyeticaFragment dyeticaFragment;
     private BasesObjectivesFragment basesObjectivesFragment;
@@ -86,7 +104,9 @@ public class MainActivity extends AppCompatActivity
         createTabHost();
         createIconAndTextUser();
 
-       if(savedInstanceState != null) {
+        attemptDieteticProfile();
+
+        if(savedInstanceState != null) {
            currentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT_KEY);
            Log.d("MainActivity", "Dentro de savedInstanceState != null, valor de current_fragment: " + currentFragment);
        } else {
@@ -95,7 +115,17 @@ public class MainActivity extends AppCompatActivity
        }
     }
 
-    /*Method that create TabHost */
+    private void attemptDieteticProfile() {
+        mAuthTask = new AttemptDieteticProfile();
+        try {
+            mAuthTask.execute((Void) null).get();
+        } catch (InterruptedException e) {
+            Log.e("MainActivity", "Interrupted AttemptDieteticProfile");
+        } catch (ExecutionException e) {
+            Log.e("MainActivity", "Error execution in AttemptDieteticProfile");
+        }
+    }
+
     private void createTabHost(){
         tabHost= (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabHost.setup(this,
@@ -103,6 +133,8 @@ public class MainActivity extends AppCompatActivity
         tabHost.addTab(tabHost.newTabSpec(TAB_BALANCER_PLUS).setIndicator(getString(R.string.balancerPlus)),
                 BalancerPlusFragment.class, null);
         tabHost.addTab(tabHost.newTabSpec(TAB_DIETETIC_PROFILE).setIndicator(getString(R.string.dietetic_profile)),
+                DieteticProfileFragment.class, null);
+        tabHost.addTab(tabHost.newTabSpec(TAB_DIETETIC_PROFILE_2).setIndicator(getString(R.string.dietetic_profile_2)),
                 DieteticProfileFragment.class, null);
 
 
@@ -117,21 +149,24 @@ public class MainActivity extends AppCompatActivity
                     case TAB_DIETETIC_PROFILE:
                         setFragment(7);
                         break;
+                    case TAB_DIETETIC_PROFILE_2:
+                        setFragment(8);
+                        break;
                 }
             }
         });
     }
 
-
-    /*Method that create header the navigation drawer, add username, email and icon user*/
     private void createIconAndTextUser(){
         User user = dbManager.getUser(prefs.getInt("idUser", 0));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //@drawable/bg_menu_dyetica
 
         View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_main);
         headerLayout.setBackgroundResource(R.drawable.bg_menu_dyetica);
 
+        //TODO: Revisar porque no recoge los elementos como toca
         mUserName = (TextView) headerLayout.findViewById(R.id.textViewUserName);
         mUserName.setText(user.getUsername());
         mUserEmail = (TextView) headerLayout.findViewById(R.id.textViewUserEmail);
@@ -300,7 +335,16 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 7:
                 if (null == dieteticProfileFragment) dieteticProfileFragment = new DieteticProfileFragment();
+                Log.d("MainActivity", "Entrando por dieteticProfileFragment, VALOR de id_user: " +  prefs.getInt("idUser", 0));
+                bundle.putInt("idUser", prefs.getInt("idUser", 0));
                 replaceFragment(dieteticProfileFragment, bundle, getString(R.string.app_name));
+                tabHost.setVisibility(View.VISIBLE);
+                break;
+            case 8:
+                if (null == dieteticProfile2Fragment) dieteticProfile2Fragment = new DieteticProfile2Fragment();
+                Log.d("MainActivity", "Entrando por dieteticProfileFragment2");
+                bundle.putInt("idUser", prefs.getInt("idUser", 0));
+                replaceFragment(dieteticProfile2Fragment, bundle, getString(R.string.app_name));
                 tabHost.setVisibility(View.VISIBLE);
                 break;
         }
@@ -345,6 +389,50 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    class AttemptDieteticProfile extends AsyncTask<Void, Void, Map<String, String>> {
+        private String error, message, statusCode;
+        private Map<String, String> success = new HashMap<>();
+
+        @Override
+        protected Map<String, String> doInBackground(Void... args) {
+            // Check for success tag
+            try {
+                // getting dietetic profile details by making HTTP request
+                Map<String, String> response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_dietetic_profile) + "0"), "GET",  prefs.getString("apiKey", ""), null);
+
+                // check your log for json response
+                statusCode = response.get(getString(R.string.status));
+                success.put(getString(R.string.status), statusCode);
+                if (!getString(R.string.status_200).equals(statusCode)){
+                    success.put(getString(R.string.error), "true");
+                    success.put(getString(R.string.message), getString(R.string.error_connection));
+                } else {
+                    error = response.get("error");
+                    message = response.get("message");
+                    if (error == "false") {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        JSONArray jsonArray = new JSONArray(message);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            DieteticProfile dieteticProfile = gson.fromJson(jsonArray.getString(i), DieteticProfile.class);
+                            Log.d("MainActivity", "Valor de idUser " + prefs.getInt("idUser", 0) +  "y de idPerfil " + i + 1);
+                            if (dbManager.getDieteticProfile(prefs.getInt("idUser", 0), i + 1) == null) {
+                                dbManager.addDieteticProfile(dieteticProfile);
+                            }
+                        }
+                    }
+                    success.put(getString(R.string.error), error);
+                    success.put(getString(R.string.message), message);
+                }
+            } catch (MalformedURLException e) {
+               Log.e("MainActivity", "Url " + getString(R.string.url_dietetic_profile) + "0"  +  " is malformed");
+            } catch (JSONException e) {
+                Log.e("MainActivity", "Json exception in AttemptDieteticProfile");
+            }
+            return success;
+        }
 
     }
 }
