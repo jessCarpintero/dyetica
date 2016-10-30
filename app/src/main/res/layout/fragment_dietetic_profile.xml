@@ -5,7 +5,21 @@
     android:id="@+id/frame_layout_id"
     tools:context="com.dyetica.app.fragments.DieteticProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/dietetic_profile_text_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        />
+
+    <TextView
+        android:id="@+id/dietetic_profile_text_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        />
+
     <TextView
         android:id="@+id/dietetic_profile_text"
         android:layout_width="match_parent"
@@ -37,7 +51,121 @@
         android:layout_height="wrap_content"
         android:text="Crear perfil"
         android:id="@+id/button_profile_dietetic_new"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center_horizontal|top"
+        android:visibility="invisible"
         android:theme="@style/ButtonApp"/>
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_c_grasae"
+        android:id="@+id/c_grasa_hint_profile_1"
+        android:visibility="invisible"
+        >
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/c_grasa_profile_1"
+            android:layout_gravity="left|center_vertical" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_kcal"
+        android:id="@+id/kcal_hint_profile_1"
+        android:visibility="invisible"
+        >
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/kcal_profile_1"
+            android:layout_gravity="right|bottom" />
+    </android.support.design.widget.TextInputLayout>
+
+    <!-- Distribución -->
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_breakfast"
+        android:id="@+id/breakfast_hint_profile_1"
+        android:visibility="invisible"
+        android:layout_gravity="left|bottom">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/breakfast_profile_1"
+            android:layout_gravity="left|center_vertical" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_dinner"
+        android:id="@+id/dinner_hint_profile_1"
+        android:visibility="invisible"
+        android:layout_gravity="right|center_vertical">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/dinner_profile_1"
+            android:layout_gravity="left|center_vertical" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_snack"
+        android:id="@+id/snack_hint_profile_1"
+        android:visibility="invisible"
+        android:layout_gravity="center_horizontal|bottom">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/snack_profile_1"
+            android:layout_gravity="right|bottom" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_lunch"
+        android:id="@+id/lunch_hint_profile_1"
+        android:visibility="invisible"
+        android:layout_gravity="left|center_vertical">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/lunch_profile_1"
+            android:layout_gravity="right|bottom" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_food"
+        android:id="@+id/food_hint_profile_1"
+        android:visibility="invisible"
+        android:layout_gravity="right|top">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/food_profile_1"
+            android:layout_gravity="left|center_vertical" />
+    </android.support.design.widget.TextInputLayout>
 </FrameLayout>

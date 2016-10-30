@@ -3,12 +3,14 @@ package com.dyetica.app.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,11 +33,28 @@ public class DieteticProfileFragment extends Fragment {
     private static final int ID_PROFILE = 1;
 
     private int idUser;
-    private TextView title;
+    private TextInputLayout kcalHint;
+    private TextInputLayout cGrasaHint;
+    private TextInputLayout breakfastHint;
+    private TextInputLayout lunchHint;
+    private TextInputLayout foodHint;
+    private TextInputLayout snackHint;
+    private TextInputLayout dinnerHint;
+    private TextView title1;
+    private TextView title2;
+    private EditText kcal;
+    private EditText cGrasa;
     private TextView titleNew;
     private TextView lastUpdateDate;
     private TextView contentNew;
     private Button createProfileDietetic;
+    private EditText breakfast;
+    private EditText lunch;
+    private EditText food;
+    private EditText snack;
+    private EditText dinner;
+
+
 
     private DBManager dbManager;
     private DieteticProfile dieteticProfile;
@@ -80,11 +99,6 @@ public class DieteticProfileFragment extends Fragment {
 
 
         Log.d("DieteticProfileFragment", "DENTRO DE  ONCREATEVIEW: " );
-
-        title = (TextView) rootView.findViewById(R.id.dietetic_profile_text);
-        lastUpdateDate = (TextView) rootView.findViewById(R.id.last_update_date);
-        titleNew = (TextView) rootView.findViewById(R.id.dietetic_profile_title_new);
-        contentNew = (TextView) rootView.findViewById(R.id.dietetic_profile_title_new);
         createProfileDietetic = (Button) rootView.findViewById(R.id.button_profile_dietetic_new);
 
 
@@ -95,50 +109,72 @@ public class DieteticProfileFragment extends Fragment {
             dbManager = DBManager.getInstance(getActivity());
             dieteticProfile = dbManager.getDieteticProfile(idUser, ID_PROFILE);
 
-            Log.d("DieteticProfileFragment", "Valor de getDieteticProfile ONCREATE: " + dieteticProfile.getUser_id());
-
-
             if (dieteticProfile != null  ){
 
                 Log.d("DieteticProfileFragment", "dentro del IF " + dieteticProfile.getUser_id());
 
+                title1 = (TextView) rootView.findViewById(R.id.dietetic_profile_text_1);
+                title2 = (TextView) rootView.findViewById(R.id.dietetic_profile_text_2);
+                title1.setText(getString(R.string.text_1_dietetic_profile));
+                title2.setText(getString(R.string.text_2_dietetic_profile));
+                lastUpdateDate = (TextView) rootView.findViewById(R.id.last_update_date);
+                kcal = (EditText) rootView.findViewById(R.id.kcal_profile_1);
+                cGrasa = (EditText) rootView.findViewById(R.id.c_grasa_profile_1);
+                kcalHint = (TextInputLayout) rootView.findViewById(R.id.kcal_hint_profile_1);
+                cGrasaHint = (TextInputLayout) rootView.findViewById(R.id.c_grasa_hint_profile_1);
+                kcal.setText(String.valueOf(dieteticProfile.getKcaldia()));
+                cGrasa.setText(String.valueOf(dieteticProfile.getCg()));
+                kcalHint.setVisibility(View.VISIBLE);
+                cGrasaHint.setVisibility(View.VISIBLE);
+                kcal.setEnabled(false);
+                cGrasa.setEnabled(false);
 
-                title.setText("Dietetic profile");
+                breakfast = (EditText) rootView.findViewById(R.id.breakfast_profile_1);
+                lunch = (EditText) rootView.findViewById(R.id.lunch_profile_1);
+                food = (EditText) rootView.findViewById(R.id.food_profile_1);
+                snack = (EditText) rootView.findViewById(R.id.snack_profile_1);
+                dinner = (EditText) rootView.findViewById(R.id.dinner_profile_1);
 
-                lastUpdateDate.setText("Fecha de la última actualización: "+ " PONER FECHA");
+                breakfast.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.2) + " (20%)");
+                lunch.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
+                food.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.4) + " (40%)");
+                snack.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
+                dinner.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.3) + " (30%)");
 
-                lastUpdateDate.setVisibility(View.INVISIBLE);
 
-                disableComponentsProfileDietetic();
+                breakfast.setEnabled(false);
+                lunch.setEnabled(false);
+                food.setEnabled(false);
+                snack.setEnabled(false);
+                dinner.setEnabled(false);
 
+                breakfastHint = (TextInputLayout) rootView.findViewById(R.id.breakfast_hint_profile_1);
+                lunchHint = (TextInputLayout) rootView.findViewById(R.id.lunch_hint_profile_1);
+                foodHint = (TextInputLayout) rootView.findViewById(R.id.food_hint_profile_1);
+                snackHint = (TextInputLayout) rootView.findViewById(R.id.snack_hint_profile_1);
+                dinnerHint = (TextInputLayout) rootView.findViewById(R.id.dinner_hint_profile_1);
+
+
+                breakfastHint.setVisibility(View.VISIBLE);
+                lunchHint.setVisibility(View.VISIBLE);
+                foodHint.setVisibility(View.VISIBLE);
+                snackHint.setVisibility(View.VISIBLE);
+                dinnerHint.setVisibility(View.VISIBLE);
+
+                lastUpdateDate.setText(getString(R.string.date_dietetic_profile) + dieteticProfile.getActualiza());
+                createProfileDietetic.setVisibility(View.INVISIBLE);
+
+
+            } else {
+                Log.d("DieteticProfileFragment", "dentro del ELSE " );
+                titleNew = (TextView) rootView.findViewById(R.id.dietetic_profile_title_new);
+                contentNew = (TextView) rootView.findViewById(R.id.dietetic_profile_title_new);
+                createProfileDietetic.setVisibility(View.VISIBLE);
+                titleNew.setText("Dietetic profile NEW");
+                contentNew.setText("Crear perfil NEW");
             }
-        } else {
-
-            titleNew.setText("Dietetic profile NEW");
-
-            contentNew.setText("Crear perfil NEW");
-
-
-            enableComponentsProfileDietetic();
-
         }
         return rootView;
-    }
-
-    private void disableComponentsProfileDietetic() {
-        titleNew.setVisibility(View.INVISIBLE);
-        contentNew.setVisibility(View.INVISIBLE);
-        createProfileDietetic.setVisibility(View.INVISIBLE);
-        title.setVisibility(View.VISIBLE);
-        lastUpdateDate.setVisibility(View.VISIBLE);
-    }
-
-    private void enableComponentsProfileDietetic() {
-        titleNew.setVisibility(View.VISIBLE);
-        contentNew.setVisibility(View.VISIBLE);
-        createProfileDietetic.setVisibility(View.VISIBLE);
-        title.setVisibility(View.INVISIBLE);
-        lastUpdateDate.setVisibility(View.INVISIBLE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         tabHost.addTab(tabHost.newTabSpec(TAB_DIETETIC_PROFILE).setIndicator(getString(R.string.dietetic_profile)),
                 DieteticProfileFragment.class, null);
         tabHost.addTab(tabHost.newTabSpec(TAB_DIETETIC_PROFILE_2).setIndicator(getString(R.string.dietetic_profile_2)),
-                DieteticProfileFragment.class, null);
+                DieteticProfile2Fragment.class, null);
 
 
 

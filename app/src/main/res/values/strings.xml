@@ -54,6 +54,14 @@
     <string name="prompt_username">Nombre de usuario</string>
     <string name="prompt_email">E-mail</string>
     <string name="error_sync_server">Error al actualizar los datos con el servidor</string>
+    <string name="prompt_kcal">Kcal/dia</string>
+    <string name="prompt_c_grasae">C. de grasa</string>
+    <string name="prompt_breakfast">Desayuno</string>
+    <string name="prompt_lunch">Almuerzo</string>
+    <string name="prompt_food">Comida</string>
+    <string name="prompt_snack">Merienda</string>
+    <string name="prompt_dinner">Cena</string>
+
 
     <!-- String related url http -->
     <string name="url_bases_and_objectives">http://www.probasmar.es/dyetica3/app/restapi/basesyobjetivos</string>
@@ -94,7 +102,12 @@
     <string name="dietetic_profile">Perfil dietético Nº 1</string>
     <string name="dietetic_profile_2">Perfil dietético Nº 2</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment dietetic 2</string>
+    <!-- Strings related to Dietetic profile -->
+    <string name="content_new_dietetic_profile">Crear un perfil te permite tener un mayor control de las calorías que necesitas diariamente y su distribución en las comidas, además de poder personalizar tu Equilibrador Plus</string>
+    <string name="title_new_dietetic_profile">No tienes un perfil creado</string>
+    <string name="date_dietetic_profile">Fecha de la última actualización: </string>
+    <string name="text_1_dietetic_profile">Cálculos</string>
+    <string name="text_2_dietetic_profile">Distribución calórica recomendada</string>
+
 
 </resources>
