@@ -272,7 +272,7 @@ public class DBManager extends SQLiteOpenHelper {
         toast.show();
     }
 
-    public void addDieteticProfile(DieteticProfile dieteticProfile){
+    public boolean addDieteticProfile(DieteticProfile dieteticProfile){
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("DBManager", "Entrando para crear dieteticPROFILE");
         try{
@@ -303,8 +303,10 @@ public class DBManager extends SQLiteOpenHelper {
 
             // Inserting Row
             db.insert(TABLE_DIETETIC_PROFILE, null, values);
+            return true;
         } catch (SQLiteException sqlError){
             Log.e("DBManager", "Error creating table " + TABLE_DIETETIC_PROFILE);
+            return false;
         } finally{
             db.close(); // Closing database connection
         }

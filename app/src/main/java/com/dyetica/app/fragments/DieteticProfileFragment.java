@@ -1,6 +1,7 @@
 package com.dyetica.app.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -15,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dyetica.app.CreateNewDieteticProfile;
 import com.dyetica.app.R;
 import com.dyetica.app.model.DieteticProfile;
 import com.dyetica.app.persistence.DBManager;
@@ -31,6 +33,7 @@ import com.dyetica.app.persistence.DBManager;
 public class DieteticProfileFragment extends Fragment {
     private static final String ID_USER = "idUser";
     private static final int ID_PROFILE = 1;
+    private static final String PROFILE = "PROFILE";
 
     private int idUser;
     private TextInputLayout kcalHint;
@@ -164,7 +167,6 @@ public class DieteticProfileFragment extends Fragment {
                 lastUpdateDate.setText(getString(R.string.date_dietetic_profile) + dieteticProfile.getActualiza());
                 createProfileDietetic.setVisibility(View.INVISIBLE);
 
-
             } else {
                 Log.d("DieteticProfileFragment", "dentro del ELSE " );
                 titleNew = (TextView) rootView.findViewById(R.id.dietetic_profile_title_new);
@@ -172,6 +174,16 @@ public class DieteticProfileFragment extends Fragment {
                 createProfileDietetic.setVisibility(View.VISIBLE);
                 titleNew.setText("Dietetic profile NEW");
                 contentNew.setText("Crear perfil NEW");
+
+                createProfileDietetic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(view.getContext(), CreateNewDieteticProfile.class);
+                        intent.putExtra(ID_USER, idUser);
+                        intent.putExtra(PROFILE, ID_PROFILE);
+                        startActivity(intent);
+                    }
+                });
             }
         }
         return rootView;

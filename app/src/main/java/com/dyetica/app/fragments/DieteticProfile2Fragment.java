@@ -1,6 +1,7 @@
 package com.dyetica.app.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dyetica.app.CreateNewDieteticProfile;
 import com.dyetica.app.R;
 import com.dyetica.app.model.DieteticProfile;
 import com.dyetica.app.persistence.DBManager;
@@ -28,6 +30,7 @@ import com.dyetica.app.persistence.DBManager;
 public class DieteticProfile2Fragment extends Fragment {
     private static final String ID_USER = "idUser";
     private static final int ID_PROFILE = 2;
+    private static final String PROFILE = "PROFILE";
 
     private int idUser;
 
@@ -169,6 +172,16 @@ public class DieteticProfile2Fragment extends Fragment {
                 createProfileDietetic.setVisibility(View.VISIBLE);
                 titleNew.setText(getString(R.string.title_new_dietetic_profile));
                 contentNew.setText(getString(R.string.content_new_dietetic_profile));
+
+                createProfileDietetic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(view.getContext(), CreateNewDieteticProfile.class);
+                        intent.putExtra(ID_USER, idUser);
+                        intent.putExtra(PROFILE, ID_PROFILE);
+                        startActivity(intent);
+                    }
+                });
             }
         }
         return rootView;

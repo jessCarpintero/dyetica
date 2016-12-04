@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Dyética</string>
+    <string name="create_new_dietetic_profile_name"></string>
 
     <string name="title_blog">Blog</string>
     <string name="title_foro">Foro</string>
@@ -61,6 +62,9 @@
     <string name="prompt_food">Comida</string>
     <string name="prompt_snack">Merienda</string>
     <string name="prompt_dinner">Cena</string>
+    <string name="prompt_rate">Ritmo (grs/semana)</string>
+    <string name="create_profile">Crear perfil</string>
+
 
 
     <!-- String related url http -->
@@ -109,5 +113,60 @@
     <string name="text_1_dietetic_profile">Cálculos</string>
     <string name="text_2_dietetic_profile">Distribución calórica recomendada</string>
 
+    <!-- Strings Create new dietetic profile and profile 2 -->
+    <string name="sex_tilte">Sexo</string>
+    <string name="height_tilte">Altura</string>
+    <string name="weight_tilte">Peso</string>
+    <string name="complexion_tilte">Complexión</string>
+    <string name="physical_activity_tilte">Actividad física</string>
+    <string name="stage_tilte">Etapa</string>
+    <string name="objectives_profile">Objetivos del perfil:</string>
+    <string name="feeding_habits">Define tus hábitos alimentarios:</string>
+    <string name="habits_tomorrow">Por la mañana ...¿què prefieres?</string>
+    <string name="habits_midday">A mediodía ...</string>
+    <string name="habits_night">Por la noche ...</string>
+    <string name="pre1_opc1">Desayuno fuerte y almuerzo ligero</string>
+    <string name="pre1_opc2">Desayuno mediano y almuerzo mediano</string>
+    <string name="pre1_opc3">Desayuno ligero y almuerzo fuerte</string>
+    <string name="pre2_opc1">1er plato ligero y 2º plato fuerte</string>
+    <string name="pre2_opc2">1er plato mediano y 2º plato mediano</string>
+    <string name="pre3_opc1">1er plato ligero y 2º plato fuerte</string>
+    <string name="pre3_opc2">1er plato mediano y 2º plato mediano</string>
+
+    <!--Strings Hints -->
+    <string name="prompt_profile_name">Nombre del perfil</string>
+
+    <!-- String Arrays -->
+    <string-array name="sex">
+        <item>Hombre</item>
+        <item>Mujer</item>
+    </string-array>
+
+    <string-array name="complexion">
+        <item>Delgada</item>
+        <item>Media</item>
+        <item>Robusta</item>
+    </string-array>
+
+    <string-array name="physical_activity">
+        <item>Basal</item>
+        <item>Sedentaria</item>
+        <item>Baja</item>
+        <item>Media</item>
+        <item>Alta</item>
+        <item>Muy alta</item>
+    </string-array>
+
+    <string-array name="stage">
+        <item>S/Etapa</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="weight">
+        <item>Mantener</item>
+        <item>Peder</item>
+        <item>Ganar</item>
+    </string-array>
 
 </resources>
