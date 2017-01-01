@@ -35,6 +35,7 @@
 
     <!-- Strings related to login -->
     <string name="prompt_password">Contraseña</string>
+    <string name="user">Usuario</string>
     <string name="action_sign_in">Iniciar sesión</string>
     <string name="action_sign_in_short">Iniciar sesión</string>
     <string name="error_invalid_password">La contraseña es demasiado corta</string>
@@ -64,6 +65,8 @@
     <string name="prompt_dinner">Cena</string>
     <string name="prompt_rate">Ritmo (grs/semana)</string>
     <string name="create_profile">Crear perfil</string>
+    <string name="save">Guardar</string>
+    <string name="calculate">Calcular</string>
 
 
 
@@ -73,12 +76,19 @@
     <string name="url_login">http://www.probasmar.es/dyetica3/app/restapi/login</string>
     <string name="url_update_profile">http://www.probasmar.es/dyetica3/app/restapi/updateinfo</string>
     <string name="url_dietetic_profile">http://www.probasmar.es/dyetica3/app/restapi/perfil/</string>
+    <string name="url_dietetic_profile_create">http://www.probasmar.es/dyetica3/app/restapi/setperfil</string>
     <string name="url_personal_food">http://www.probasmar.es/dyetica3/app/restapi/personalfood/</string>
+    <string name="url_extensions_profile">http://www.probasmar.es/dyetica3/app/restapi/parametersperfil</string>
+    <string name="url_ideal_weight">http://www.probasmar.es/dyetica3/app/restapi/pesoideal</string>
+    <string name="url_food">http://www.probasmar.es/dyetica3/app/restapi/food/</string>
 
     <!-- Values response http -->
     <string name="status">status</string>
     <string name="error">error</string>
     <string name="message">message</string>
+    <string name="error_questions_1">Campo requerido en la pregunta 1</string>
+    <string name="error_questions_2">Campo requerido en la pregunta 2</string>
+    <string name="error_questions_3">Campo requerido en la pregunta 3</string>
 
     <!-- DBManager -->
     <string name="error_create">Error creando la tabla en base de datos</string><!-- Errors DatabaseHandler -->

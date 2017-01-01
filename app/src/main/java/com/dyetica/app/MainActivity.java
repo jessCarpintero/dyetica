@@ -1,6 +1,7 @@
 package com.dyetica.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAB_BALANCER_PLUS = "tab_balancer_plus";
     private static final String TAB_DIETETIC_PROFILE = "tab_dietetic_profile";
     private static final String TAB_DIETETIC_PROFILE_2 = "tab_dietetic_profile_2";
+    private static final String PROFILE = "PROFILE";
+
 
     private TextView mUserName;
     private TextView mUserEmail;
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity
     private int currentFragment;
     private SharedPreferences prefs;
     private AttemptDieteticProfile mAuthTask = null;
-
+    private int idDieteticProfile;
 
     //Fragments
     private BalancerPlusFragment balancerPlusFragment;
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity
         dbManager.getWritableDatabase();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
+        idDieteticProfile = intent.getIntExtra(PROFILE, 0);
 
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_menu_manage));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -163,6 +168,11 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        if (0 != idDieteticProfile) {
+            setFragment((1 == idDieteticProfile) ? 7 : 8);
+            tabHost.setCurrentTabByTag((1 == idDieteticProfile) ? TAB_DIETETIC_PROFILE : TAB_DIETETIC_PROFILE_2);
+        }
     }
 
     private void createIconAndTextUser(){
@@ -182,8 +192,7 @@ public class MainActivity extends AppCompatActivity
 
         TextDrawable.IShapeBuilder drawable1 = TextDrawable.builder();
         Log.d("MainActivity", "Valor de drawable1 " + drawable1.toString());
-        TextDrawable drawable = drawable1.buildRound(user.getUsername().substring(0,1).toUpperCase(), Color.BLUE);
-
+        TextDrawable drawable = drawable1.buildRound(user.getUsername().substring(0,1).toUpperCase(), Color.DKGRAY);
 
         Log.d("MainActivity", "Valor de drawable1 " + drawable.toString());
 
@@ -352,6 +361,7 @@ public class MainActivity extends AppCompatActivity
                 if (null == dieteticProfile2Fragment) dieteticProfile2Fragment = new DieteticProfile2Fragment();
                 Log.d("MainActivity", "Entrando por dieteticProfileFragment2");
                 bundle.putInt("idUser", prefs.getInt("idUser", 0));
+                bundle.putLong("idExtensionsProfile", prefs.getLong("idExtensionsProfile", 0));
                 replaceFragment(dieteticProfile2Fragment, bundle, getString(R.string.app_name));
                 tabHost.setVisibility(View.VISIBLE);
                 break;
@@ -425,9 +435,11 @@ public class MainActivity extends AppCompatActivity
                         JSONArray jsonArray = new JSONArray(message);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             DieteticProfile dieteticProfile = gson.fromJson(jsonArray.getString(i), DieteticProfile.class);
-                            Log.d("MainActivity", "Valor de idUser " + prefs.getInt("idUser", 0) +  "y de idPerfil " + i + 1);
-                            if (dbManager.getDieteticProfile(prefs.getInt("idUser", 0), i + 1) == null) {
+                            DieteticProfile dieteticProfileOld = dbManager.getDieteticProfile(prefs.getInt("idUser", 0), i + 1);
+                            if (dieteticProfileOld == null) {
                                 dbManager.addDieteticProfile(dieteticProfile);
+                            } else {
+                                dbManager.updateDieteticProfile(dieteticProfile, dieteticProfileOld.getId());
                             }
                         }
                     }
@@ -443,4 +455,5 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
 }

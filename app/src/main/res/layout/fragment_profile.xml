@@ -1,24 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dyetica.app.fragments.ProfileFragment">
-
-    <ScrollView
-        android:id="@+id/login_scroll_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="5dp"
-            >
+    android:alignmentMode="alignBounds"
+    android:padding="4dp"
+    android:columnCount="1"
+    android:rowCount="8">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nombre"
+                android:layout_column="0"
+                android:layout_row="0"
                 >
 
                 <EditText
@@ -35,6 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_surname1"
+                android:layout_column="0"
+                android:layout_row="1"
                 >
                 <EditText
                     android:layout_width="match_parent"
@@ -50,6 +45,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_surname2"
+                android:layout_column="0"
+                android:layout_row="2"
                 >
                 <EditText
                     android:layout_width="match_parent"
@@ -65,6 +62,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_birthay_day"
+                android:layout_column="0"
+                android:layout_row="3"
                 >
                 <EditText
                     android:layout_width="match_parent"
@@ -81,6 +80,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_postal_code"
+                android:layout_column="0"
+                android:layout_row="4"
                 >
                 <EditText
                     android:layout_width="match_parent"
@@ -97,6 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_username"
+                android:layout_column="0"
+                android:layout_row="5"
                 >
                 <EditText
                     android:layout_width="match_parent"
@@ -112,6 +115,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
+                android:layout_column="0"
+                android:layout_row="6"
                 >
                 <EditText
                     android:layout_width="match_parent"
@@ -126,10 +131,11 @@
             <Button
                 android:layout_width="175dp"
                 android:layout_height="wrap_content"
-                android:text="Guardar"
+                android:text="@string/save"
                 android:id="@+id/buttonProfile"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="bottom|center"
+                android:layout_column="0"
+                android:layout_row="7"
                 android:theme="@style/ButtonApp"/>
-        </LinearLayout>
-    </ScrollView>
-</FrameLayout>
+
+</GridLayout>

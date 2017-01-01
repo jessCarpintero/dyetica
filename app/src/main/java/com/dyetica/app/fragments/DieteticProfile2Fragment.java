@@ -19,6 +19,8 @@ import com.dyetica.app.R;
 import com.dyetica.app.model.DieteticProfile;
 import com.dyetica.app.persistence.DBManager;
 
+import java.text.DecimalFormat;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -50,6 +52,7 @@ public class DieteticProfile2Fragment extends Fragment {
     private TextView lastUpdateDate;
     private TextView contentNew;
     private Button createProfileDietetic;
+    private Button updateProfileDietetic;
     private DBManager dbManager;
     private DieteticProfile dieteticProfile;
     private EditText breakfast;
@@ -100,14 +103,14 @@ public class DieteticProfile2Fragment extends Fragment {
 
         Log.d("DieteticProfileFragment", "DENTRO DE  ONCREATEVIEW 2: " );
         createProfileDietetic = (Button) rootView.findViewById(R.id.button_profile_2_dietetic_new);
-
-
+        updateProfileDietetic = (Button) rootView.findViewById(R.id.button_profile_dietetic_2_update);
 
         if (getArguments() != null) {
             Log.d("DieteticProfileFragment", " getArguments() ONCREATEVIEW 2 " +  getArguments().getInt(ID_USER));
             idUser = getArguments().getInt(ID_USER);
             dbManager = DBManager.getInstance(getActivity());
             dieteticProfile = dbManager.getDieteticProfile(idUser, ID_PROFILE);
+            DecimalFormat df = new DecimalFormat("###.##");
 
             if (dieteticProfile != null  ){
 
@@ -124,9 +127,7 @@ public class DieteticProfile2Fragment extends Fragment {
                 cGrasa = (EditText) rootView.findViewById(R.id.c_grasa_profile_2);
                 kcalHint = (TextInputLayout) rootView.findViewById(R.id.kcal_hint_profile_2);
                 cGrasaHint = (TextInputLayout) rootView.findViewById(R.id.c_grasa_hint_profile_2);
-                kcal.setText(String.valueOf(dieteticProfile.getKcaldia()));
-                cGrasa.setText(String.valueOf(dieteticProfile.getCg()));
-                kcalHint.setVisibility(View.VISIBLE);
+                        kcalHint.setVisibility(View.VISIBLE);
                 cGrasaHint.setVisibility(View.VISIBLE);
                 kcal.setEnabled(false);
                 cGrasa.setEnabled(false);
@@ -138,12 +139,14 @@ public class DieteticProfile2Fragment extends Fragment {
                 snack = (EditText) rootView.findViewById(R.id.snack_profile_2);
                 dinner = (EditText) rootView.findViewById(R.id.dinner_profile_2);
 
-                breakfast.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.2) + " (20%)");
-                lunch.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
-                food.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.4) + " (40%)");
-                snack.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
-                dinner.setText(String.valueOf(dieteticProfile.getKcaldia() * 0.3) + " (30%)");
+                breakfast.setText(df.format(dieteticProfile.getKcaldia() * 0.2) + " (20%)");
+                lunch.setText(df.format(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
+                food.setText(df.format(dieteticProfile.getKcaldia() * 0.4) + " (40%)");
+                snack.setText(df.format(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
+                dinner.setText(df.format(dieteticProfile.getKcaldia() * 0.3) + " (30%)");
 
+                kcal.setText(df.format(dieteticProfile.getKcaldia()));
+                cGrasa.setText(df.format(dieteticProfile.getCg()));
 
                 breakfast.setEnabled(false);
                 lunch.setEnabled(false);
@@ -164,12 +167,26 @@ public class DieteticProfile2Fragment extends Fragment {
                 snackHint.setVisibility(View.VISIBLE);
                 dinnerHint.setVisibility(View.VISIBLE);
 
+                createProfileDietetic.setVisibility(View.INVISIBLE);
+                updateProfileDietetic.setVisibility(View.VISIBLE);
+
+                updateProfileDietetic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(view.getContext(), CreateNewDieteticProfile.class);
+                        intent.putExtra(ID_USER, idUser);
+                        intent.putExtra(PROFILE, ID_PROFILE);
+                        startActivity(intent);
+                    }
+                });
+
             } else {
                 Log.d("DieteticProfileFragment", "dentro del ELSE 2" );
 
                 titleNew = (TextView) rootView.findViewById(R.id.dietetic_profile_2_title_new);
                 contentNew = (TextView) rootView.findViewById(R.id.dietetic_profile_2_new_content);
                 createProfileDietetic.setVisibility(View.VISIBLE);
+                updateProfileDietetic.setVisibility(View.INVISIBLE);
                 titleNew.setText(getString(R.string.title_new_dietetic_profile));
                 contentNew.setText(getString(R.string.content_new_dietetic_profile));
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -37,6 +38,18 @@ public class MethodsUtil {
         Log.d("MethodsUtil", "Valor de date despues de modificarlo: " + parsedDate.toString());
 
         return new Timestamp(parsedDate.getTime());
+    }
+
+    public static String getDateNow(){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
+        return  format1.format(cal.getTime());
+    }
+
+    public static String getDateNowFormatT(){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        return  format1.format(cal.getTime());
     }
 
 }

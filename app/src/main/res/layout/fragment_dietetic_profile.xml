@@ -55,6 +55,15 @@
         android:visibility="invisible"
         android:theme="@style/ButtonApp"/>
 
+    <Button
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:text="Modificar perfil"
+        android:id="@+id/button_profile_dietetic_update"
+        android:layout_gravity="center_horizontal|bottom"
+        android:visibility="invisible"
+        android:theme="@style/ButtonApp"/>
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,10 +90,9 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="number"
             android:ems="10"
             android:id="@+id/kcal_profile_1"
-            android:layout_gravity="right|bottom" />
+            android:layout_gravity="right|center" />
     </android.support.design.widget.TextInputLayout>
 
     <!-- Distribución -->

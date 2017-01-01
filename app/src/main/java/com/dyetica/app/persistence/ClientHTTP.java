@@ -29,13 +29,6 @@ public class ClientHTTP {
     private static final String TAG_ERROR = "error";
     private static final String TAG_STATUS = "status";
 
-   // public static ClientHTTP getInstance(){
-     //   if (null == clientHTTP){
-       //     clientHTTP = new ClientHTTP();
-        //}
-        //return clientHTTP;
-    //}
-
     private ClientHTTP(){
 
     }

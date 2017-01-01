@@ -77,7 +77,7 @@
                 android:inputType="numberDecimal"
                 android:ems="10"
                 android:id="@+id/kcal_profile_2"
-                android:layout_gravity="left|top"
+                android:layout_gravity="left|center_vertical"
                 android:layout_above="@+id/button_profile_2_dietetic_new"
                 android:layout_alignRight="@+id/dietetic_profile_2_title_new"
                 android:layout_alignEnd="@+id/dietetic_profile_2_title_new"
@@ -184,5 +184,14 @@
             android:id="@+id/food_profile_2"
             android:layout_gravity="left|center_vertical" />
     </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:text="Modificar perfil"
+        android:id="@+id/button_profile_dietetic_2_update"
+        android:layout_gravity="center_horizontal|bottom"
+        android:visibility="invisible"
+        android:theme="@style/ButtonApp"/>
 
 </FrameLayout>

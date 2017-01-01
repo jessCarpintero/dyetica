@@ -33,15 +33,27 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dyetica.app.model.DieteticProfile;
+import com.dyetica.app.model.ExtensionsProfile;
+import com.dyetica.app.model.Food;
+import com.dyetica.app.model.Statistics;
+import com.dyetica.app.model.TypeActivity;
 import com.dyetica.app.model.User;
 import com.dyetica.app.persistence.ClientHTTP;
 import com.dyetica.app.persistence.DBManager;
+import com.dyetica.app.utils.MethodsUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,14 +67,14 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private AttemptLogin mAuthTask = null;
+
+    private AttemptExtensionscProfile mAuthTaskExtensionsProfile = null;
+
+    private AttemptFoods mAttemptFoods = null;
+
     // UI references.
     private EditText mUserNameView;
     private EditText mPasswordView;
@@ -70,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginScrollFormView;
     private DBManager dbManager;
+    private String mLastAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +118,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        Map<String, String> success = new HashMap<>();
+        Map<String, String> successAttempLogin = new HashMap<>();
+        Map<String, String> successAttemptExtensionsProfile = new HashMap<>();
         boolean error = true;
 
         if (mAuthTask != null) {
@@ -147,21 +161,72 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new AttemptLogin(userName, password);
             try {
-                success = mAuthTask.execute((Void) null).get();
+                successAttempLogin = mAuthTask.execute((Void) null).get();
             } catch (InterruptedException e) {
                 Log.e("LoginActivity", "Attempt login have been interripted: " + e.getMessage());
             } catch (ExecutionException e) {
                 Log.e("VERBOSE", "Attempt login have been in execution error: " + e.getMessage());
             }
 
-            error = Boolean.parseBoolean(success.get(getString(R.string.error)));
+            error = Boolean.parseBoolean(successAttempLogin.get(getString(R.string.error)));
            if (!error) {
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                finish();
-                startActivity(i);
+               attemptFoods();
+               successAttemptExtensionsProfile = attemptExtensionsProfile();
+                if (!Boolean.parseBoolean(successAttemptExtensionsProfile.get(getString(R.string.error)))) {
+                    createTypeActivity();
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    finish();
+                    startActivity(i);
+                } else {
+                    Toast.makeText(this, successAttemptExtensionsProfile.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
+                }
             } else {
-               Toast.makeText(this, success.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
+               Toast.makeText(this, successAttempLogin.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    //Get extensions profile from server
+    private Map<String, String> attemptExtensionsProfile() {
+        Map<String, String> success = new HashMap<>();
+        mAuthTaskExtensionsProfile = new AttemptExtensionscProfile();
+        try {
+            success = mAuthTaskExtensionsProfile.execute((Void) null).get();
+        } catch (InterruptedException e) {
+            Log.e("LoginActivity", "Interrupted attemptExtensionsProfile");
+        } catch (ExecutionException e) {
+            Log.e("LoginActivity", "Error execution in attemptExtensionsProfile");
+        }
+        return success;
+    }
+    
+    //Get all foods
+    private void attemptFoods() {
+        boolean error;
+        Map<String, String> success = new HashMap<>();
+        mAttemptFoods = new AttemptFoods();
+        try {
+            success =  mAttemptFoods.execute((Void) null).get();
+        } catch (InterruptedException e) {
+            Log.e("MainActivity", "Interrupted AttemptFoods");
+        } catch (ExecutionException e) {
+            Log.e("MainActivity", "Error execution in AttemptFoods");
+        }
+
+        error = Boolean.parseBoolean(success.get(getString(R.string.error)));
+        if (error) {
+            Toast.makeText(this, success.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void createTypeActivity(){
+        if (null == dbManager.getTypeActivity(0)){
+            dbManager.addTypeActivity(new TypeActivity(0, "BASAL", 1));
+            dbManager.addTypeActivity(new TypeActivity(1, "SEDENTARIA", 1.2F));
+            dbManager.addTypeActivity(new TypeActivity(2, "BAJA", 1.4F));
+            dbManager.addTypeActivity(new TypeActivity(3, "MEDIA", 1.6F));
+            dbManager.addTypeActivity(new TypeActivity(4, "ALTA", 1.8F));
+            dbManager.addTypeActivity(new TypeActivity(5, "MUY ALTA", 2));
         }
     }
 
@@ -286,6 +351,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         } else {
                             dbManager.updateUser(user);
                         }
+                        //TODO Obtenemos la fecha de ultima actualizacion para recoger los valores de los alimientos en el servidor
+                        Statistics statistics = dbManager.getStatistics(user.getId());
+                        if (null == statistics){
+                            statistics = new Statistics(0, user.getId(), MethodsUtil.getDateNowFormatT());
+                            dbManager.addStatistics(statistics);
+                        } else {
+                            mLastAccess = statistics.getLast_access();
+                        }
+                        Log.d("LoginActivity", "Valor de statistics: " + dbManager.getStatistics(user.getId()));
                     }
                     success.put(getString(R.string.error), error);
                     success.put(getString(R.string.message), message);
@@ -316,10 +390,104 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             prefsEditor.putInt("idUser", user.getId());
             prefsEditor.putString("apiKey", user.getApiKey());
+
             prefsEditor.commit();
         }
     }
 
+    class AttemptExtensionscProfile extends AsyncTask<Void, Void, Map<String, String>> {
+        private String error, message, statusCode;
+        private Map<String, String> success = new HashMap<>();
 
+        @Override
+        protected Map<String, String> doInBackground(Void... args) {
+            SharedPreferences prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = prefs.edit();
+            // Check for success tag
+            try {
+                // getting dietetic profile details by making HTTP request
+                Map<String, String> response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_extensions_profile)), "GET",  prefs.getString("apiKey", ""), null);
+
+                // check your log for json response
+                statusCode = response.get(getString(R.string.status));
+                success.put(getString(R.string.status), statusCode);
+                if (!getString(R.string.status_200).equals(statusCode)){
+                    success.put(getString(R.string.error), "true");
+                    success.put(getString(R.string.message), getString(R.string.error_connection));
+                } else {
+                    error = response.get("error");
+                    message = response.get("message");
+                    if (error == "false") {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        JSONObject jsonObject = new JSONObject(message);
+                        ExtensionsProfile extensionsProfile = gson.fromJson(jsonObject.toString(), ExtensionsProfile.class);
+                        ExtensionsProfile extensionsProfileOld = dbManager.getExtensionsProfile(0);
+                        if (extensionsProfileOld == null) {
+                                long idExtensionsProfile = dbManager.addExtensionsProfile(extensionsProfile);
+                                if (idExtensionsProfile != -1){
+                                    prefsEditor.putLong("idExtensionsProfile", idExtensionsProfile);
+                                } else {
+                                    error  = "true";
+                                }
+                            }
+                    }
+                    success.put(getString(R.string.error), error);
+                    success.put(getString(R.string.message), message);
+                }
+                prefsEditor.commit();
+
+            } catch (MalformedURLException e) {
+                Log.e("LoginActivity", "Url " + getString(R.string.url_extensions_profile) +  " is malformed");
+            } catch (JSONException e) {
+                Log.e("LoginActivity", "Json exception in AttemptExtensionscProfile");
+            }
+            return success;
+        }
+
+    }
+
+    class AttemptFoods extends AsyncTask<Void, Void, Map<String, String>> {
+        private String error, message, statusCode;
+        private Map<String, String> success = new HashMap<>();
+        private Map<String, String> response;
+
+        @Override
+        protected Map<String, String> doInBackground(Void... args) {
+            SharedPreferences prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            // Check for success tag
+            try {
+                // getting dietetic profile details by making HTTP request
+                int count = dbManager.getFoodCount();
+                if (0 == count || -1 == count) {
+                    response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_food) + "0000-00-00T00:00:00"), "GET", prefs.getString("apiKey", ""), null);
+                } else {
+                    response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_food) + mLastAccess), "GET", prefs.getString("apiKey", ""), null);
+                }
+                //TODO PROBARLO
+                // check your log for json response
+                statusCode = response.get(getString(R.string.status));
+                success.put(getString(R.string.status), statusCode);
+                if (!getString(R.string.status_200).equals(statusCode)){
+                    success.put(getString(R.string.error), "true");
+                    success.put(getString(R.string.message), getString(R.string.error_connection));
+                } else {
+                    error = response.get("error");
+                    message = response.get("message");
+                    if (error == "false") {
+                        JSONArray jsonArray = new JSONArray(message);
+                        dbManager.addFoods(jsonArray);
+                    }
+                    success.put(getString(R.string.error), error);
+                    success.put(getString(R.string.message), message);
+                }
+            } catch (MalformedURLException e) {
+                Log.e("MainActivity", "Url " + getString(R.string.url_food) +  " is malformed");
+            } catch (JSONException e) {
+                Log.e("MainActivity", "Json exception in AttemptFoods");
+            }
+            return success;
+        }
+
+    }
 }
 
