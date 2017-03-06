@@ -9,13 +9,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.dyetica.app.R;
 import com.dyetica.app.persistence.ClientHTTP;
+import com.dyetica.app.utils.MethodsUtil;
+import com.dyetica.app.utils.MyWebViewClient;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -28,31 +33,15 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BlogFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BlogFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BlogFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private WebView web;
+    private String urlInit;
 
     public BlogFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BlogFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static BlogFragment newInstance(String param1, String param2) {
         BlogFragment fragment = new BlogFragment();
         return fragment;
@@ -67,26 +56,29 @@ public class BlogFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_blog, container, false);
+        setHasOptionsMenu(true);
         AttemptBlog attemptBlog = new AttemptBlog();
         try {
+            urlInit = "http://dyetica.com/blog";
             web = (WebView) rootView.findViewById(R.id.webViewBlog);
             web.setInitialScale(1);
             web.getSettings().setUseWideViewPort(true);
             web.getSettings().setBuiltInZoomControls(true);
-            web.setWebViewClient(new WebViewClient());
+            web.getSettings().setJavaScriptEnabled(true);
+            web.getSettings().setDomStorageEnabled(true);
+            web.setWebViewClient(new MyWebViewClient(urlInit));
 
-            String htmlData = null;
-
-            htmlData = attemptBlog.execute((Void) null).get();
-
-            if (("").equals(htmlData)){
-                Log.d("NlogFragment", "Dentro de '' ");
-
-                web.loadUrl("http://dyetica.com/blog");
+            StringBuilder htmlData = new StringBuilder();
+            htmlData.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"app-style.css\" />");
+            htmlData.append(attemptBlog.execute((Void) null).get());
+            if (MethodsUtil.isConnected(getActivity().getApplicationContext())) {
+                if (("").equals(htmlData)) {
+                    web.loadUrl(urlInit);
+                } else {
+                    web.loadDataWithBaseURL("file:///android_asset/.", htmlData.toString(), "text/html", "UTF-8", null);
+                }
             } else {
-                Log.d("NlogFragment", "htmldata con valor ");
-
-                web.loadDataWithBaseURL("file:///android_asset/.", htmlData, "text/html", "UTF-8", null);
+                Toast.makeText(getActivity(), getString(R.string.error_connection), Toast.LENGTH_LONG).show();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -97,7 +89,13 @@ public class BlogFragment extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.getItem(0).setEnabled(false);
+        menu.getItem(0).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -121,16 +119,6 @@ public class BlogFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -145,10 +133,8 @@ public class BlogFragment extends Fragment {
             Document doc;
             String html = "";
             try {
-                doc = Jsoup.connect("http://dyetica.com/blog").get();
-                doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "app-style.css");
+                doc = Jsoup.connect(urlInit).get();
                 html = doc.outerHtml();
-                Log.d("BlogFragment", "Dentro del attempBLOG: " + html);
                 return html;
             } catch (IOException e) {
                 Log.e("BlogFragment", "Error execution Attemp Blog");

@@ -1,15 +1,19 @@
 package com.dyetica.app;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.icu.text.StringPrepParseException;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -79,6 +83,8 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
     private float mkcalAdjusted;
     private float mcgAdjusted;
     private Button mCalculate;
+    private DecimalFormat df;
+
 
 
 
@@ -87,15 +93,19 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_dietetic_profile);
         toolbar = (Toolbar) findViewById(R.id.toolbarCreate);
+        createProfileDietetic = (Button) findViewById(R.id.button_create_profile_dietetic);
+        mCalculate = (Button) findViewById(R.id.button_calculate);
         setSupportActionBar(toolbar);
         dieteticProfile =  new DieteticProfile();
+        df = new DecimalFormat("###.##");
+        df.setDecimalFormatSymbols(MethodsUtil.setDecimalSeparator());
 
         Intent intent = getIntent();
         idUser = intent.getIntExtra(ID_USER, 0);
         idProfiile = intent.getIntExtra(PROFILE, 1);
         idExtensionsProfile = intent.getLongExtra(ID_EXTENSIONS_PROFILE, 0);
 
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_menu_send));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,17 +115,10 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //TODO no lo muestra
-        toolbar.setTitle("Prueba");
-
-
-
         dbManager = DBManager.getInstance(this);
         user = User.getInstance(dbManager.getUser(idUser));
         dieteticProfile = dbManager.getDieteticProfile(idUser, idProfiile);
-        if (null == dieteticProfile){
-            dieteticProfile = new DieteticProfile();
-        }
+
         extensionsProfile = dbManager.getExtensionsProfile(idExtensionsProfile);
 
         mNameView = (EditText) findViewById(R.id.editTextNameProfile);
@@ -149,8 +152,13 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
 
         if( null != dieteticProfile){
             loadDieteticProfile();
+            getSupportActionBar().setTitle(getString(R.string.edit_dietetic_profile_name));
+            createProfileDietetic.setText(getString(R.string.edit_profile_dietetic));
+        } else {
+            getSupportActionBar().setTitle(getString(R.string.create_new_dietetic_profile_name));
+            createProfileDietetic.setText(getString(R.string.create_profile_dietetic));
+            dieteticProfile = new DieteticProfile();
         }
-        createProfileDietetic = (Button) findViewById(R.id.button_create_profile_dietetic);
 
         createProfileDietetic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +172,6 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
             }
         });
 
-        mCalculate = (Button) findViewById(R.id.button_calculate);
         mCalculate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,7 +232,6 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
 
     private void regulateParams() {
         float kcalTheoretical = kcalTheoretical();
-        DecimalFormat df = new DecimalFormat("###.##");
         switch (dieteticProfile.getObjetivo()){
             case 1:
                 mkcalAdjusted = Math.round(kcalTheoretical - (dieteticProfile.getRitmo() * extensionsProfile.getFormulas_gr_sem_kilo()));
@@ -243,7 +249,6 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
     }
 
     private void getResultKcalAndCg(){
-        DecimalFormat df = new DecimalFormat("###.##");
         if (mcgAdjusted < extensionsProfile.getFormulas_cg_min() || mcgAdjusted > extensionsProfile.getFormulas_cg_max()){
             Toast.makeText(this, "NO ES FACTIBLE", Toast.LENGTH_LONG).show();
         } else {
@@ -527,7 +532,6 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
                 error = false;
             }
         }
-        Log.d("CalculateProfile", "Valor de error require: " + error);
         return error;
     }
 
@@ -707,6 +711,39 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
             }
             return success;
         }
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitByBackKey();
+
+            //moveTaskToBack(false);
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    protected void exitByBackKey() {
+
+        AlertDialog alertbox = new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.do_you_want_to_exit))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                    // do something when the button is clicked
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        finish();
+                        //close();
+                    }
+                })
+                .setNegativeButton(getString(R.string.not), new DialogInterface.OnClickListener() {
+
+                    // do something when the button is clicked
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                })
+                .show();
+
     }
 
 }

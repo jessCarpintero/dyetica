@@ -10,6 +10,32 @@
 #rt-block{
     display:none;
 }
+.moduletable{
+    display:none;
+}
+.custominfo-box{
+    display:none;
+}
+.eb-share{
+    display: none;
+}
+.eb-entry-tools{
+    display: none !important;
+}
 h1{
 color:#F00;
+}
+html, body, div, span, p, ul, li, a, strong{
+    font-family: Arial !important;
+    font-size:34px !important;
+    line-height: 40px !important;
+}
+div#fd.eb .eb-post-title{
+    font-size:50px;
+}
+div#fd .fa{
+    font: normal normal normal 30px/1 FontAwesome !important;
+}
+.hidden-phone{
+    display: none;
 }

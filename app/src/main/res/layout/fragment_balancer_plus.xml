@@ -1,31 +1,347 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.dyetica.app.fragments.BalancerPlusFragment">
 
-    <TextView
-        android:id="@+id/balancer_text"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="0dp"
+        android:layout_weight="0.22"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_portion"
+                android:id="@+id/portion_hint"
+                app:hintTextAppearance="@style/TextLabel"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@android:color/tertiary_text_dark"
+                    android:id="@+id/portion" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_kcal_balance"
+                android:id="@+id/kcal_balance_hint"
+                app:hintTextAppearance="@style/TextLabel"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@android:color/tertiary_text_dark"
+                    android:id="@+id/kcal_balance" />
+            </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:text="@string/add_ingredient"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:id="@+id/button_add_food"
+                    android:theme="@style/ButtonApp"/>
+                <Button
+                    android:text="@string/my_ingredients"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:id="@+id/button_create_food"
+                    android:theme="@style/ButtonApp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/balancer_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/ingredients"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_marginBottom="0dp"
+            android:textColor="@color/colorGreenApp"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.40"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/list_view_foods"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.35"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:text="@string/balance"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_balance"
+                android:theme="@style/ButtonApp"/>
+            <Button
+                android:text="@string/customize"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_customize"
+                android:theme="@style/ButtonApp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:background="@color/colorBrown"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:text="@string/composition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="@color/colorTitleToolbar"
+                android:id="@+id/composition"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="@string/composition_h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="@color/colorTitleToolbar"
+                android:id="@+id/composition_h"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/composition_hydrates"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="@string/composition_p"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="@color/colorTitleToolbar"
+                android:id="@+id/composition_p"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/composition_protein"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="@string/composition_f"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="@color/colorTitleToolbar"
+                android:id="@+id/composition_f"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/composition_fats"
+                android:layout_weight="1" />
+
+            <Button
+                android:drawable="@drawable/ic_info_outline_white_48dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/button_more"
+                android:theme="@style/ButtonApp"/>
+        </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_gravity="center_horizontal|start"
+            android:orientation="horizontal"
+            android:paddingTop="0dp"
+            android:paddingBottom="2dp">
 
-            <ListView
-                android:id="@+id/listViewFoods"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-            </LinearLayout>
-    </ScrollView>
+                android:layout_height="wrap_content"
+                android:id="@+id/text_view_balance"
+                android:textSize="18sp"
+                android:paddingBottom="4dp"
+                android:textAlignment="center"/>
 
-</FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorLightGrey"
+            android:layout_gravity="center_horizontal|bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:text="@string/relation_hydrates_protein"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/relation_hydrates_protein_text"
+                android:textSize="13sp"
+                android:layout_weight="2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:id="@+id/relation_hydrates_protein_value"
+                android:layout_weight="3"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorLightGrey"
+            android:layout_gravity="center_horizontal|bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:text="@string/relation_fats"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:id="@+id/relation_fats_text"
+                android:layout_weight="2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:id="@+id/relation_fats_value"
+                android:textStyle="bold"
+                android:layout_weight="3"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorLightGrey"
+            android:layout_gravity="center_horizontal|bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:id="@+id/oil_value"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

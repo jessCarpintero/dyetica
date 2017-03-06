@@ -12,12 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dyetica.app.CreateNewDieteticProfile;
 import com.dyetica.app.R;
 import com.dyetica.app.model.DieteticProfile;
+import com.dyetica.app.model.ExtensionsBalancerPlus;
 import com.dyetica.app.persistence.DBManager;
+import com.dyetica.app.utils.MethodsUtil;
 
 import java.text.DecimalFormat;
 
@@ -33,6 +36,8 @@ public class DieteticProfile2Fragment extends Fragment {
     private static final String ID_USER = "idUser";
     private static final int ID_PROFILE = 2;
     private static final String PROFILE = "PROFILE";
+    private static final String ID_EXTENSIONS_PROFILE = "idExtensionsProfile";
+    private static final String ID_EXTENSIONS_BALANCER_PLUS = "idExtensionsBalancerPlus";
 
     private int idUser;
 
@@ -54,14 +59,19 @@ public class DieteticProfile2Fragment extends Fragment {
     private Button createProfileDietetic;
     private Button updateProfileDietetic;
     private DBManager dbManager;
-    private DieteticProfile dieteticProfile;
     private EditText breakfast;
     private EditText lunch;
     private EditText food;
     private EditText snack;
     private EditText dinner;
+    private LinearLayout linearCreateContainer;
 
     private OnFragmentInteractionListener mListener;
+    private DieteticProfile dieteticProfile;
+    private ExtensionsBalancerPlus extensionsBalancerPlus;
+
+    private long idExtensionsProfile;
+    private long idExtensionsBalancerPlus;
 
     public DieteticProfile2Fragment() {
         // Required empty public constructor
@@ -92,6 +102,8 @@ public class DieteticProfile2Fragment extends Fragment {
         if (getArguments() != null) {
             Log.d("DieteticProfileFragment", " getArguments() ONCREATE 2 " + getArguments().getInt(ID_USER));
             idUser = getArguments().getInt(ID_USER);
+            idExtensionsProfile =  getArguments().getLong(ID_EXTENSIONS_PROFILE);
+            idExtensionsBalancerPlus = getArguments().getLong(ID_EXTENSIONS_BALANCER_PLUS);
         }
       }
 
@@ -100,7 +112,7 @@ public class DieteticProfile2Fragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dietetic_profile2, container, false);
 
-
+        linearCreateContainer = (LinearLayout) rootView.findViewById(R.id.layoutCreateContainer);
         Log.d("DieteticProfileFragment", "DENTRO DE  ONCREATEVIEW 2: " );
         createProfileDietetic = (Button) rootView.findViewById(R.id.button_profile_2_dietetic_new);
         updateProfileDietetic = (Button) rootView.findViewById(R.id.button_profile_dietetic_2_update);
@@ -110,9 +122,15 @@ public class DieteticProfile2Fragment extends Fragment {
             idUser = getArguments().getInt(ID_USER);
             dbManager = DBManager.getInstance(getActivity());
             dieteticProfile = dbManager.getDieteticProfile(idUser, ID_PROFILE);
+            extensionsBalancerPlus =  dbManager.getExtensionsBalancerPlus(idExtensionsBalancerPlus);
             DecimalFormat df = new DecimalFormat("###.##");
+            df.setDecimalFormatSymbols(MethodsUtil.setDecimalSeparator());
 
             if (dieteticProfile != null  ){
+                linearCreateContainer.setVisibility(View.INVISIBLE);
+                ViewGroup.LayoutParams params = linearCreateContainer.getLayoutParams();
+                params.height = 0;
+                linearCreateContainer.setLayoutParams(params);
 
                 Log.d("DieteticProfileFragment", "dentro del IF 2 " + dieteticProfile.getUser_id());
 
@@ -121,17 +139,19 @@ public class DieteticProfile2Fragment extends Fragment {
                 title1.setText(getString(R.string.text_1_dietetic_profile));
                 title2.setText(getString(R.string.text_2_dietetic_profile));
                 lastUpdateDate = (TextView) rootView.findViewById(R.id.last_update_date_profile_2);
-                lastUpdateDate.setText(getString(R.string.date_dietetic_profile) + dieteticProfile.getActualiza());
+                lastUpdateDate.setText(getString(R.string.date_dietetic_profile) + " " + dieteticProfile.getActualiza());
                 createProfileDietetic.setVisibility(View.INVISIBLE);
                 kcal = (EditText) rootView.findViewById(R.id.kcal_profile_2);
                 cGrasa = (EditText) rootView.findViewById(R.id.c_grasa_profile_2);
                 kcalHint = (TextInputLayout) rootView.findViewById(R.id.kcal_hint_profile_2);
                 cGrasaHint = (TextInputLayout) rootView.findViewById(R.id.c_grasa_hint_profile_2);
-                        kcalHint.setVisibility(View.VISIBLE);
+                kcalHint.setVisibility(View.VISIBLE);
                 cGrasaHint.setVisibility(View.VISIBLE);
+                lastUpdateDate.setVisibility(View.VISIBLE);
                 kcal.setEnabled(false);
+                kcal.setFocusable(false);
                 cGrasa.setEnabled(false);
-
+                cGrasa.setFocusable(false);
 
                 breakfast = (EditText) rootView.findViewById(R.id.breakfast_profile_2);
                 lunch = (EditText) rootView.findViewById(R.id.lunch_profile_2);
@@ -139,11 +159,17 @@ public class DieteticProfile2Fragment extends Fragment {
                 snack = (EditText) rootView.findViewById(R.id.snack_profile_2);
                 dinner = (EditText) rootView.findViewById(R.id.dinner_profile_2);
 
-                breakfast.setText(df.format(dieteticProfile.getKcaldia() * 0.2) + " (20%)");
-                lunch.setText(df.format(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
-                food.setText(df.format(dieteticProfile.getKcaldia() * 0.4) + " (40%)");
-                snack.setText(df.format(dieteticProfile.getKcaldia() * 0.05) + " (5%)");
-                dinner.setText(df.format(dieteticProfile.getKcaldia() * 0.3) + " (30%)");
+                breakfast.setFocusable(false);
+                lunch.setFocusable(false);
+                food.setFocusable(false);
+                snack.setFocusable(false);
+                dinner.setFocusable(false);
+
+                breakfast.setText(df.format(dieteticProfile.getKcaldia() * (extensionsBalancerPlus.getDesayuno_necesidades()/100)) + " Kcal (20%)");
+                lunch.setText(df.format(dieteticProfile.getKcaldia() * (extensionsBalancerPlus.getAlmuerzo_necesidades()/100)) + " Kcal (5%)");
+                food.setText(df.format(dieteticProfile.getKcaldia() * (extensionsBalancerPlus.getComida_necesidades()/100)) + " Kcal (40%)");
+                snack.setText(df.format(dieteticProfile.getKcaldia() * (extensionsBalancerPlus.getMerienda_necesidades()/100)) + " Kcal (5%)");
+                dinner.setText(df.format(dieteticProfile.getKcaldia() * (extensionsBalancerPlus.getCena_necesidades()/100)) + " Kcal (30%)");
 
                 kcal.setText(df.format(dieteticProfile.getKcaldia()));
                 cGrasa.setText(df.format(dieteticProfile.getCg()));
@@ -177,14 +203,18 @@ public class DieteticProfile2Fragment extends Fragment {
                         intent.putExtra(ID_USER, idUser);
                         intent.putExtra(PROFILE, ID_PROFILE);
                         startActivity(intent);
+                        getActivity().finish();
                     }
                 });
 
             } else {
                 Log.d("DieteticProfileFragment", "dentro del ELSE 2" );
+                linearCreateContainer.setVisibility(View.VISIBLE);
 
                 titleNew = (TextView) rootView.findViewById(R.id.dietetic_profile_2_title_new);
+                titleNew.setVisibility(View.VISIBLE);
                 contentNew = (TextView) rootView.findViewById(R.id.dietetic_profile_2_new_content);
+                contentNew.setVisibility(View.VISIBLE);
                 createProfileDietetic.setVisibility(View.VISIBLE);
                 updateProfileDietetic.setVisibility(View.INVISIBLE);
                 titleNew.setText(getString(R.string.title_new_dietetic_profile));
@@ -197,6 +227,7 @@ public class DieteticProfile2Fragment extends Fragment {
                         intent.putExtra(ID_USER, idUser);
                         intent.putExtra(PROFILE, ID_PROFILE);
                         startActivity(intent);
+                        getActivity().finish();
                     }
                 });
             }
@@ -214,12 +245,6 @@ public class DieteticProfile2Fragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override

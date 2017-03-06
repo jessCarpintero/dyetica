@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp"
+    android:id="@+id/linear_layout_dialog_food">
+
+    <TabHost
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tabHostCreate">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/create_personal_food"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                            <TextView
+                                android:text="@string/location_food"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="16dp"
+                                android:id="@+id/categories_food" />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:id="@+id/spinner_location_food" />
+                        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                            <android.support.design.widget.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/name_food_hint"
+                                app:hintTextAppearance="@style/TextLabel"
+                                android:id="@+id/name_food_hint"
+                                android:layout_weight="1">
+                                <EditText
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:ems="10"
+                                    android:id="@+id/edit_text_name_food"
+                                    android:textColor="@android:color/tertiary_text_dark"
+                                    android:layout_gravity="center_horizontal|center_vertical" />
+                            </android.support.design.widget.TextInputLayout>
+
+                            <android.support.design.widget.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/prompt_weight"
+                                app:hintTextAppearance="@style/TextLabel"
+                                android:id="@+id/net_weight_hint"
+                                android:layout_weight="1">
+                                <EditText
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"
+                                    android:ems="10"
+                                    android:id="@+id/edit_text_net_weight"
+                                    android:textColor="@android:color/tertiary_text_dark"
+                                    android:layout_gravity="center_horizontal|center_vertical" />
+                            </android.support.design.widget.TextInputLayout>
+                        </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/prompt_hydrates"
+                                    app:hintTextAppearance="@style/TextLabel"
+                                    android:id="@+id/hydrates_hint"
+                                    android:layout_gravity="center_horizontal|bottom">
+                                <EditText
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="numberDecimal"
+                                    android:ems="10"
+                                    android:id="@+id/edit_text_hydrates"
+                                    android:textColor="@android:color/tertiary_text_dark"
+                                    android:layout_gravity="center_horizontal|center_vertical" />
+                                </android.support.design.widget.TextInputLayout>
+
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/prompt_protein"
+                                    app:hintTextAppearance="@style/TextLabel"
+                                    android:id="@+id/protein_hint"
+                                    android:layout_gravity="center_horizontal|bottom">
+                                    <EditText
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="numberDecimal"
+                                        android:ems="10"
+                                        android:id="@+id/edit_text_protein"
+                                        android:textColor="@android:color/tertiary_text_dark"
+                                        android:layout_gravity="center_horizontal|center_vertical" />
+                                </android.support.design.widget.TextInputLayout>
+
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/prompt_fats"
+                                    app:hintTextAppearance="@style/TextLabel"
+                                    android:id="@+id/fats_hint"
+                                    android:layout_gravity="center_horizontal|bottom">
+                                    <EditText
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="number"
+                                        android:ems="10"
+                                        android:id="@+id/edit_text_fats"
+                                        android:textColor="@android:color/tertiary_text_dark"
+                                        android:layout_gravity="center_horizontal|center_vertical" />
+                                </android.support.design.widget.TextInputLayout>
+                            </LinearLayout>
+
+                    </LinearLayout>
+                </ScrollView>
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/update_personal_food"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:text="@string/location_food"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16dp"
+                            android:id="@+id/categories_food_update" />
+
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:id="@+id/spinner_location_food_update" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="2">
+                                <TextView
+                                    android:text="@string/food_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="14sp"
+                                    android:id="@+id/food" />
+
+                                <Spinner
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:id="@+id/spinner_food" />
+                        </LinearLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_weight"
+                        app:hintTextAppearance="@style/TextLabel"
+                        android:id="@+id/net_weight_hint_update"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_weight="1">
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:ems="10"
+                            android:id="@+id/edit_text_net_weight_update"
+                            android:textColor="@android:color/tertiary_text_dark"
+                            android:layout_gravity="center_horizontal|center_vertical" />
+                    </android.support.design.widget.TextInputLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/prompt_hydrates"
+                            app:hintTextAppearance="@style/TextLabel"
+                            android:id="@+id/hydrates_hint_update"
+                            android:layout_gravity="center_horizontal|bottom">
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:ems="10"
+                                android:id="@+id/edit_text_hydrates_update"
+                                android:textColor="@android:color/tertiary_text_dark"
+                                android:layout_gravity="center_horizontal|center_vertical" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/prompt_protein"
+                            app:hintTextAppearance="@style/TextLabel"
+                            android:id="@+id/protein_hint_update"
+                            android:layout_gravity="center_horizontal|bottom">
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:ems="10"
+                                android:id="@+id/edit_text_protein_update"
+                                android:textColor="@android:color/tertiary_text_dark"
+                                android:layout_gravity="center_horizontal|center_vertical" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/prompt_fats"
+                            app:hintTextAppearance="@style/TextLabel"
+                            android:id="@+id/fats_hintc"
+                            android:layout_gravity="center_horizontal|bottom">
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:ems="10"
+                                android:id="@+id/edit_text_fats_update"
+                                android:textColor="@android:color/tertiary_text_dark"
+                                android:layout_gravity="center_horizontal|center_vertical" />
+                        </android.support.design.widget.TextInputLayout>
+                    </LinearLayout>
+                </LinearLayout>
+                </ScrollView>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+
+</LinearLayout>

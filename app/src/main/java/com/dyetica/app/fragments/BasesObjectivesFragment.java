@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -69,6 +71,7 @@ public class BasesObjectivesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Set fragment_attractions.xml to be the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_bases_objectives, container, false);
+        setHasOptionsMenu(true);
         dbManager = DBManager.getInstance(getActivity());
         mResultBasesObjectives = getHtmlBasesAndObjectives();
 
@@ -111,6 +114,8 @@ public class BasesObjectivesFragment extends Fragment {
                     html = new String(message.getBytes(),  "UTF-8");
                     saveBasesObjectivesInDB(html);
                 }
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.error_connection), Toast.LENGTH_LONG).show();
             }
         } catch (MalformedURLException e) {
             Log.e("BasesObjectivesFragment", "Error Malformed URL: " + getString(R.string.url_bases_and_objectives));
@@ -122,6 +127,13 @@ public class BasesObjectivesFragment extends Fragment {
             Log.e("BasesObjectivesFragment", "Error unsupported encoding in AttemptBasesAndObjectives: " + e.getMessage());
         }
         return html.trim();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.getItem(0).setEnabled(false);
+        menu.getItem(0).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void saveBasesObjectivesInDB(String result) {

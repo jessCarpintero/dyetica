@@ -6,10 +6,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -91,7 +95,7 @@ public class ProfileFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         dbManager = DBManager.getInstance(getActivity());
         userCurrent = User.getInstance(dbManager.getUser(idUser));
-
+        setHasOptionsMenu(true);
         mNameView = (EditText) rootView.findViewById(R.id.editTextName);
         mSurname1View = (EditText) rootView.findViewById(R.id.editTextSurname1);
         mSurname2View = (EditText) rootView.findViewById(R.id.editTextSurname2);
@@ -115,6 +119,13 @@ public class ProfileFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.getItem(0).setEnabled(false);
+        menu.getItem(0).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private User generateUser() {
@@ -299,8 +310,6 @@ public class ProfileFragment extends Fragment {
             mDateBirthday = dateBirthday;
             mPostalCode = postalCode;
         }
-
-
         @Override
         protected Boolean doInBackground(Void... args) {
             SharedPreferences prefs = getActivity().getSharedPreferences("myPreferences", Context.MODE_PRIVATE);

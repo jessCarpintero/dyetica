@@ -3,12 +3,13 @@ package com.dyetica.app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -29,13 +30,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dyetica.app.model.DieteticProfile;
+import com.dyetica.app.model.ExtensionsBalancerPlus;
 import com.dyetica.app.model.ExtensionsProfile;
-import com.dyetica.app.model.Food;
+import com.dyetica.app.model.PersonalFood;
 import com.dyetica.app.model.Statistics;
 import com.dyetica.app.model.TypeActivity;
 import com.dyetica.app.model.User;
@@ -51,15 +53,12 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -70,10 +69,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private AttemptLogin mAuthTask = null;
-
+    private static final String ID_USER = "idUser";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String SAVE_LOGIN = "saveLogin";
     private AttemptExtensionscProfile mAuthTaskExtensionsProfile = null;
 
+    private AttemptExtensionscBalancerPlus mAuthTaskExtensionsBalancerPlus = null;
+
     private AttemptFoods mAttemptFoods = null;
+    private AttemptPersonalFoods mAttemptPersonalFoods = null;
+    private SharedPreferences prefsLogin;
+    private CheckBox saveLoginCheckBox;
 
     // UI references.
     private EditText mUserNameView;
@@ -83,33 +90,52 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginScrollFormView;
     private DBManager dbManager;
     private String mLastAccess;
+    private Boolean saveLogin;
+    private SharedPreferences.Editor prefsEditorLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
-        dbManager = DBManager.getInstance(this);
 
-        // Set up the login form.
-        mUserNameView = (EditText) findViewById(R.id.user_text);
-
-        mPasswordView = (EditText) findViewById(R.id.password);
-
-        //Link to http://dyetica.com/hazte-socio
-        mLinkRegisterView = (TextView) findViewById(R.id.link_register);
-        mLinkRegisterView.setText(Html.fromHtml("¿No estás registrado todavía? <a href=\"http://dyetica.com/hazte-socio\">Accede a la web </a>"));
-        mLinkRegisterView.setMovementMethod(LinkMovementMethod.getInstance());
-
-        Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
-        mSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
+            dbManager = DBManager.getInstance(this);
+            prefsLogin = this.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
+            prefsEditorLogin = prefsLogin.edit();
+            // Set up the login form.
+            mUserNameView = (EditText) findViewById(R.id.user_text);
+            mPasswordView = (EditText) findViewById(R.id.password);
+            saveLoginCheckBox = (CheckBox)findViewById(R.id.saveLoginCheckBox);
+            saveLogin = prefsLogin.getBoolean(SAVE_LOGIN, false);
+            if (saveLogin == true) {
+                mUserNameView.setText(prefsLogin.getString(USERNAME, ""));
+                mPasswordView.setText(prefsLogin.getString(PASSWORD, ""));
+                saveLoginCheckBox.setChecked(true);
             }
-        });
+            mLinkRegisterView = (TextView) findViewById(R.id.link_register);
+            mLinkRegisterView.setText(Html.fromHtml("¿No estás registrado todavía? <a href=\"http://dyetica.com/hazte-socio\">Accede a la web </a>"));
+            mLinkRegisterView.setMovementMethod(LinkMovementMethod.getInstance());
 
-        mLoginScrollFormView = findViewById(R.id.login_scroll_form);
-        mProgressView = findViewById(R.id.login_progress);
+            Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
+            mSignInButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    attemptLogin();
+
+                    if (saveLoginCheckBox.isChecked()) {
+                        prefsEditorLogin.putBoolean(SAVE_LOGIN, true);
+                        prefsEditorLogin.putString(USERNAME, mUserNameView.getText().toString());
+                        prefsEditorLogin.putString(PASSWORD, mPasswordView.getText().toString());
+                        prefsEditorLogin.commit();
+                    } else {
+                        prefsEditorLogin.clear();
+                        prefsEditorLogin.commit();
+                    }
+                }
+            });
+
+            mLoginScrollFormView = findViewById(R.id.login_scroll_form);
+            mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -120,6 +146,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void attemptLogin() {
         Map<String, String> successAttempLogin = new HashMap<>();
         Map<String, String> successAttemptExtensionsProfile = new HashMap<>();
+        Map<String, String> successAttemptExtensionsBalancerPlus = new HashMap<>();
+
         boolean error = true;
 
         if (mAuthTask != null) {
@@ -171,8 +199,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             error = Boolean.parseBoolean(successAttempLogin.get(getString(R.string.error)));
            if (!error) {
                attemptFoods();
+               attemptPersonalFoods();
                successAttemptExtensionsProfile = attemptExtensionsProfile();
-                if (!Boolean.parseBoolean(successAttemptExtensionsProfile.get(getString(R.string.error)))) {
+               successAttemptExtensionsBalancerPlus = attemptExtensionsBalancerPlus();
+                if (!Boolean.parseBoolean(successAttemptExtensionsProfile.get(getString(R.string.error))) && !Boolean.parseBoolean(successAttemptExtensionsBalancerPlus.get("error"))) {
                     createTypeActivity();
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     finish();
@@ -184,6 +214,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                Toast.makeText(this, successAttempLogin.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    //Get extensions balancer plus from server
+    private Map<String, String> attemptExtensionsBalancerPlus() {
+        Map<String, String> success = new HashMap<>();
+        mAuthTaskExtensionsBalancerPlus = new AttemptExtensionscBalancerPlus();
+        try {
+            success = mAuthTaskExtensionsBalancerPlus.execute((Void) null).get();
+        } catch (InterruptedException e) {
+            Log.e("LoginActivity", "Interrupted attemptExtensionsBalancerPlus");
+        } catch (ExecutionException e) {
+            Log.e("LoginActivity", "Error execution in attemptExtensionsBalancerPlus");
+        }
+        return success;
     }
 
     //Get extensions profile from server
@@ -207,6 +251,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mAttemptFoods = new AttemptFoods();
         try {
             success =  mAttemptFoods.execute((Void) null).get();
+        } catch (InterruptedException e) {
+            Log.e("MainActivity", "Interrupted AttemptFoods");
+        } catch (ExecutionException e) {
+            Log.e("MainActivity", "Error execution in AttemptFoods");
+        }
+
+        error = Boolean.parseBoolean(success.get(getString(R.string.error)));
+        if (error) {
+            Toast.makeText(this, success.get(getString(R.string.message)), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Get personal foods
+    private void attemptPersonalFoods() {
+        boolean error;
+        Map<String, String> success = new HashMap<>();
+        mAttemptPersonalFoods = new AttemptPersonalFoods();
+        try {
+            success =  mAttemptPersonalFoods.execute((Void) null).get();
         } catch (InterruptedException e) {
             Log.e("MainActivity", "Interrupted AttemptFoods");
         } catch (ExecutionException e) {
@@ -354,10 +417,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         //TODO Obtenemos la fecha de ultima actualizacion para recoger los valores de los alimientos en el servidor
                         Statistics statistics = dbManager.getStatistics(user.getId());
                         if (null == statistics){
+                            Log.d("LoginActivity", "NO EXISTE statistics: ");
                             statistics = new Statistics(0, user.getId(), MethodsUtil.getDateNowFormatT());
                             dbManager.addStatistics(statistics);
-                        } else {
                             mLastAccess = statistics.getLast_access();
+                        } else {
+                            Log.d("LoginActivity", "EXISTE statistics: ");
+                            mLastAccess = statistics.getLast_access();
+                            statistics.setLast_access(MethodsUtil.getDateNowFormatT());
+                            dbManager.updateStatistics(statistics);
                         }
                         Log.d("LoginActivity", "Valor de statistics: " + dbManager.getStatistics(user.getId()));
                     }
@@ -388,7 +456,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             SharedPreferences prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
             SharedPreferences.Editor prefsEditor = prefs.edit();
 
-            prefsEditor.putInt("idUser", user.getId());
+            prefsEditor.putInt(ID_USER, user.getId());
             prefsEditor.putString("apiKey", user.getApiKey());
 
             prefsEditor.commit();
@@ -450,6 +518,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private String error, message, statusCode;
         private Map<String, String> success = new HashMap<>();
         private Map<String, String> response;
+        // Progress Dialog
+        private ProgressDialog pDialog;
 
         @Override
         protected Map<String, String> doInBackground(Void... args) {
@@ -458,12 +528,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 // getting dietetic profile details by making HTTP request
                 int count = dbManager.getFoodCount();
-                if (0 == count || -1 == count) {
+                if (count <= 0) {
                     response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_food) + "0000-00-00T00:00:00"), "GET", prefs.getString("apiKey", ""), null);
                 } else {
                     response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_food) + mLastAccess), "GET", prefs.getString("apiKey", ""), null);
                 }
-                //TODO PROBARLO
                 // check your log for json response
                 statusCode = response.get(getString(R.string.status));
                 success.put(getString(R.string.status), statusCode);
@@ -475,7 +544,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     message = response.get("message");
                     if (error == "false") {
                         JSONArray jsonArray = new JSONArray(message);
-                        dbManager.addFoods(jsonArray);
+                        if (jsonArray.length() > 0 && count > 0) {
+                            dbManager.addOrUpdateFoods(jsonArray);
+                        } else  if (jsonArray.length() > 0 && count <= 0) {
+                            dbManager.addFoods(jsonArray);
+                        }
                     }
                     success.put(getString(R.string.error), error);
                     success.put(getString(R.string.message), message);
@@ -484,6 +557,101 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Log.e("MainActivity", "Url " + getString(R.string.url_food) +  " is malformed");
             } catch (JSONException e) {
                 Log.e("MainActivity", "Json exception in AttemptFoods");
+            }
+            return success;
+        }
+    }
+
+    class AttemptExtensionscBalancerPlus extends AsyncTask<Void, Void, Map<String, String>> {
+        private String error, message, statusCode;
+        private Map<String, String> success = new HashMap<>();
+
+        @Override
+        protected Map<String, String> doInBackground(Void... args) {
+            SharedPreferences prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = prefs.edit();
+            // Check for success tag
+            try {
+                // getting dietetic profile details by making HTTP request
+                Map<String, String> response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_extensions_balancer_plus)), "GET",  prefs.getString("apiKey", ""), null);
+
+                // check your log for json response
+                statusCode = response.get(getString(R.string.status));
+                success.put(getString(R.string.status), statusCode);
+                if (!getString(R.string.status_200).equals(statusCode)){
+                    success.put(getString(R.string.error), "true");
+                    success.put(getString(R.string.message), getString(R.string.error_connection));
+                } else {
+                    error = response.get("error");
+                    message = response.get("message");
+                    if (error == "false") {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        JSONObject jsonObject = new JSONObject(message);
+                        ExtensionsBalancerPlus extensionsBalancerPlus = gson.fromJson(jsonObject.toString(), ExtensionsBalancerPlus.class);
+                        ExtensionsBalancerPlus extensionsBalancerPlusOld = dbManager.getExtensionsBalancerPlus(0);
+                        if (extensionsBalancerPlusOld == null) {
+                            long idExtensionsBalancerPlus = dbManager.addExtensionsBalancerPlus(extensionsBalancerPlus);
+                            if (idExtensionsBalancerPlus != -1){
+                                prefsEditor.putLong("idExtensionsBalancerPlus", idExtensionsBalancerPlus);
+                            } else {
+                                error  = "true";
+                            }
+                        }
+                    }
+                    success.put(getString(R.string.error), error);
+                    success.put(getString(R.string.message), message);
+                }
+                prefsEditor.commit();
+
+            } catch (MalformedURLException e) {
+                Log.e("LoginActivity", "Url " + getString(R.string.url_extensions_balancer_plus) +  " is malformed");
+            } catch (JSONException e) {
+                Log.e("LoginActivity", "Json exception in AttemptExtensionscProfile");
+            }
+            return success;
+        }
+    }
+
+    class AttemptPersonalFoods extends AsyncTask<Void, Void, Map<String, String>> {
+        private String error, message, statusCode;
+        private Map<String, String> success = new HashMap<>();
+        private Map<String, String> response;
+
+        @Override
+        protected Map<String, String> doInBackground(Void... args) {
+            SharedPreferences prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            // Check for success tag
+            try {
+                // getting dietetic profile details by making HTTP request
+                response = ClientHTTP.makeHttpRequest(new URL(getString(R.string.url_personal_food)), "GET", prefs.getString("apiKey", ""), null);
+                // check your log for json response
+                statusCode = response.get(getString(R.string.status));
+                success.put(getString(R.string.status), statusCode);
+                if (!getString(R.string.status_200).equals(statusCode)){
+                    success.put(getString(R.string.error), "true");
+                    success.put(getString(R.string.message), getString(R.string.error_connection));
+                } else {
+                    error = response.get("error");
+                    message = response.get("message");
+                    if (error == "false") {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        JSONArray jsonArray = new JSONArray(message);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            PersonalFood personalFood = gson.fromJson(jsonArray.getString(i), PersonalFood.class);
+                            PersonalFood personalFoodExist = dbManager.getPersonalFood(personalFood.getId());
+                            if (personalFoodExist == null) {
+                                personalFood.setCalorias(MethodsUtil.calcCalories(personalFood));
+                                dbManager.addPersonalFoods(personalFood);
+                            }
+                        }
+                    }
+                    success.put(getString(R.string.error), error);
+                    success.put(getString(R.string.message), message);
+                }
+            } catch (MalformedURLException e) {
+                Log.e("MainActivity", "Url " + getString(R.string.url_personal_food) +  " is malformed");
+            } catch (JSONException e) {
+                Log.e("MainActivity", "Json exception in AttemptPersonalFoods");
             }
             return success;
         }

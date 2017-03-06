@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#333333</color>
     <color name="colorAccent">#ff33ff</color>
     <color name="colorTitleToolbar">#f06dff</color>
+    <color name="colorGreenApp">#679D00</color>
+    <color name="colorRed">#FF0000</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBrown">#462E2E</color>
+    <color name="colorLightGrey">#DFDFDF</color>
 </resources>

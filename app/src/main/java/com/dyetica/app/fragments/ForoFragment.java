@@ -1,16 +1,30 @@
 package com.dyetica.app.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.dyetica.app.R;
+import com.dyetica.app.utils.MethodsUtil;
+import com.dyetica.app.utils.MyWebViewClient;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,8 +35,9 @@ import com.dyetica.app.R;
  * create an instance of this fragment.
  */
 public class ForoFragment extends Fragment {
-
     private OnFragmentInteractionListener mListener;
+    private WebView web;
+    private String urlInit;
 
     public ForoFragment() {
         // Required empty public constructor
@@ -51,20 +66,48 @@ public class ForoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_foro, container, false);
+        setHasOptionsMenu(true);
+        AttemptForo attemptForo = new AttemptForo();
+        try {
+            String urlBase = "http://dyetica.com/foro";
+            urlInit = "http://dyetica.com/foro/categorias";
+            web = (WebView) rootView.findViewById(R.id.webViewForo);
+            web.setInitialScale(1);
+            web.getSettings().setUseWideViewPort(true);
+            web.getSettings().setBuiltInZoomControls(true);
+            web.setWebViewClient(new MyWebViewClient(urlBase));
 
-        WebView web = (WebView) rootView.findViewById(R.id.webViewForo);
-        web.setWebViewClient(new WebViewClient());
-        web.loadUrl("http://dyetica.com/foro/categorias");
-        web.setInitialScale(1);
-        web.getSettings().setUseWideViewPort(true);
-        web.getSettings().setBuiltInZoomControls(true);
+
+            StringBuilder htmlData = new StringBuilder();
+            htmlData.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"app-style.css\" />");
+            htmlData.append("<base href=\"http://dyetica.com/foro/categorias\"");
+            htmlData.append(attemptForo.execute((Void) null).get());
+            if (MethodsUtil.isConnected(getActivity().getApplicationContext())) {
+                if (("").equals(htmlData)) {
+                    web.loadUrl(urlInit);
+                } else {
+                    web.loadDataWithBaseURL("file:///android_asset/.", htmlData.toString(), "text/html", "UTF-8", null);
+                }
+            }  else {
+                Toast.makeText(getActivity(), getString(R.string.error_connection), Toast.LENGTH_LONG).show();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
         return rootView;
 
-
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.getItem(0).setEnabled(false);
+        menu.getItem(0).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -101,5 +144,26 @@ public class ForoFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public class AttemptForo extends AsyncTask<Void, Void, String> {
+        private ProgressDialog pDialog;
+
+
+        @Override
+        protected String doInBackground(Void... urls) {
+            Document doc;
+            String html = "";
+            try {
+                doc = Jsoup.connect(urlInit).get();
+                html = doc.outerHtml();
+                Log.d("ForoFragment", "Dentro del attempFORO: ");
+                return html;
+            } catch (IOException e) {
+                Log.e("ForoFragment", "Error execution Attemp Foro");
+                return html;
+            }
+        }
+
     }
 }

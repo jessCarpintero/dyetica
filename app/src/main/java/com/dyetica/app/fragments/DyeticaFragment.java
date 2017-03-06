@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import com.dyetica.app.R;
 import com.dyetica.app.model.Information;
 import com.dyetica.app.persistence.ClientHTTP;
 import com.dyetica.app.persistence.DBManager;
+import com.dyetica.app.utils.MethodsUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -73,6 +76,7 @@ public class DyeticaFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Set fragment_attractions.xml to be the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dyetica, container, false);
+        setHasOptionsMenu(true);
         dbManager = DBManager.getInstance(getActivity());
 
         mResultDyetica = getHtmlDyetica();
@@ -82,6 +86,13 @@ public class DyeticaFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.getItem(0).setEnabled(false);
+        menu.getItem(0).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /** Get results dyetica from server or DB
@@ -115,6 +126,8 @@ public class DyeticaFragment extends Fragment {
                     html = new String(message.getBytes(),  "UTF-8");
                     saveDyeticaInDB(html);
                 }
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.error_connection), Toast.LENGTH_LONG).show();
             }
         } catch (MalformedURLException e) {
             Log.e("DyeticaFragment", "Error Malformed URL: " + getString(R.string.url_dyetica));

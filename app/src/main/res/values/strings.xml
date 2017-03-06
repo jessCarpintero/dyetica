@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Dyética</string>
-    <string name="create_new_dietetic_profile_name"></string>
+    <string name="create_new_dietetic_profile_name">Crear perfil diétetico</string>
+    <string name="edit_dietetic_profile_name">Editar perfil diétetico</string>
 
     <string name="title_blog">Blog</string>
     <string name="title_foro">Foro</string>
@@ -10,6 +11,30 @@
     <string name="title_profile">Mi perfil</string>
     <string name="title_bases_and_objectives">Bases y objetivos</string>
     <string name="title_perfil_dietetico">Perfil dietético</string>
+    <string name="title_perfiles_dieteticos">Perfiles dietéticos</string>
+
+    <!-- String Balancer Plus-->
+    <string name="ingredients">Ingredientes</string>
+    <string name="empty_ingredients">Faltan ingredientes</string>
+    <string name="composition_h">H:</string>
+    <string name="composition_p">P:</string>
+    <string name="composition_f">G:</string>
+    <string name="balance_text">Equilibrado</string>
+    <string name="unbalanced">Desequilibrado</string>
+    <string name="balance_balance">Equilibrado</string>
+    <string name="balance_fast">Equilibrado (Se mantienen reservas)</string>
+    <string name="light_protein_deficit">Déficit proteico ligero</string>
+    <string name="medium_protein_deficit">Déficit proteico medio</string>
+    <string name="severe_protein_deficit">Déficit proteico severo</string>
+    <string name="light_protein_excess">Exceso proteico ligero</string>
+    <string name="medium_protein_excess">Exceso proteico medio</string>
+    <string name="severe_protein_excess">Exceso proteico severo</string>
+    <string name="light_fats_deficit">Déficit grasas ligero</string>
+    <string name="medium_fats_deficit">Déficit grasas medio</string>
+    <string name="severe_fats_deficit">Déficit grasas severo</string>
+    <string name="light_fats_excess">Exceso grasas ligero</string>
+    <string name="medium_fats_excess">Exceso grasas medio</string>
+    <string name="severe_fats_excess">Exceso grasas severo</string>
 
     <!-- Dialogs -->
     <string name="dialog_get_data">Obteniendo datos</string>
@@ -45,7 +70,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="attempt_login">"Iniciando sesión ..."</string>
+    <string name="attempt_login">"Iniciando sesión &#8230;"</string>
 
     <!-- Strings related to profile -->
     <string name="prompt_name">Nombre</string>
@@ -67,20 +92,32 @@
     <string name="create_profile">Crear perfil</string>
     <string name="save">Guardar</string>
     <string name="calculate">Calcular</string>
-
-
+    <string name="prompt_grams">Cantidad en gramos</string>
+    <string name="add">Añadir</string>
+    <string name="add_ingredient">Añadir ingrediente</string>
+    <string name="create_ingredient">Crear ingredientes</string>
+    <string name="my_ingredients">Mis ingredientes</string>
+    <string name="delete">Eliminar</string>
+    <string name="update">Editar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="categories">Categorias</string>
+    <string name="food_text">Alimentos</string>
+    <string name="location_food">Ubicación</string>
 
     <!-- String related url http -->
-    <string name="url_bases_and_objectives">http://www.probasmar.es/dyetica3/app/restapi/basesyobjetivos</string>
-    <string name="url_dyetica">http://www.probasmar.es/dyetica3/app/restapi/dyetica</string>
-    <string name="url_login">http://www.probasmar.es/dyetica3/app/restapi/login</string>
-    <string name="url_update_profile">http://www.probasmar.es/dyetica3/app/restapi/updateinfo</string>
-    <string name="url_dietetic_profile">http://www.probasmar.es/dyetica3/app/restapi/perfil/</string>
-    <string name="url_dietetic_profile_create">http://www.probasmar.es/dyetica3/app/restapi/setperfil</string>
-    <string name="url_personal_food">http://www.probasmar.es/dyetica3/app/restapi/personalfood/</string>
-    <string name="url_extensions_profile">http://www.probasmar.es/dyetica3/app/restapi/parametersperfil</string>
-    <string name="url_ideal_weight">http://www.probasmar.es/dyetica3/app/restapi/pesoideal</string>
-    <string name="url_food">http://www.probasmar.es/dyetica3/app/restapi/food/</string>
+    <string name="url_bases_and_objectives">http://dyetica.com/app/restapi/basesyobjetivos</string>
+    <string name="url_dyetica">http://dyetica.com/app/restapi/dyetica</string>
+    <string name="url_login">http://dyetica.com/app/restapi/login</string>
+    <string name="url_update_profile">http://dyetica.com/app/restapi/updateinfo</string>
+    <string name="url_dietetic_profile">http://dyetica.com/app/restapi/perfil/</string>
+    <string name="url_dietetic_profile_create">http://dyetica.com/app/restapi/setperfil</string>
+    <string name="url_personal_food">http://dyetica.com/app/restapi/personalfood</string>
+    <string name="url_extensions_profile">http://dyetica.com/app/restapi/parametersperfil</string>
+    <string name="url_ideal_weight">http://dyetica.com/app/restapi/pesoideal</string>
+    <string name="url_food">http://dyetica.com/app/restapi/food/</string>
+    <string name="url_extensions_balancer_plus">http://dyetica.com/app/restapi/parametersequilibrador</string>
+    <string name="url_add_personal_food">http://dyetica.com/app/restapi/updatepersonalfood</string>
+    <string name="url_delete_personal_food">http://dyetica.com/app/restapi/deletepersonalfood</string>
 
     <!-- Values response http -->
     <string name="status">status</string>
@@ -113,15 +150,18 @@
 
     <!-- Strings related to MainActivity -->
     <string name="balancerPlus">Equilibrador Plus</string>
-    <string name="dietetic_profile">Perfil dietético Nº 1</string>
-    <string name="dietetic_profile_2">Perfil dietético Nº 2</string>
+    <string name="nav_dietetic_profile">Perfiles dietéticos</string>
+    <string name="dietetic_profile">Perfil Nº 1 dietético</string>
+    <string name="dietetic_profile_2">Perfil Nº 2 dietético</string>
 
     <!-- Strings related to Dietetic profile -->
     <string name="content_new_dietetic_profile">Crear un perfil te permite tener un mayor control de las calorías que necesitas diariamente y su distribución en las comidas, además de poder personalizar tu Equilibrador Plus</string>
     <string name="title_new_dietetic_profile">No tienes un perfil creado</string>
-    <string name="date_dietetic_profile">Fecha de la última actualización: </string>
+    <string name="date_dietetic_profile">Última actualización: </string>
     <string name="text_1_dietetic_profile">Cálculos</string>
     <string name="text_2_dietetic_profile">Distribución calórica recomendada</string>
+    <string name="add_food">Añadir ingrediente</string>
+    <string name="update_food">Editar ingrediente</string>
 
     <!-- Strings Create new dietetic profile and profile 2 -->
     <string name="sex_tilte">Sexo</string>
@@ -131,10 +171,11 @@
     <string name="physical_activity_tilte">Actividad física</string>
     <string name="stage_tilte">Etapa</string>
     <string name="objectives_profile">Objetivos del perfil:</string>
+    <string name="characteristics_text">Define tus caracteristicas físicas:</string>
     <string name="feeding_habits">Define tus hábitos alimentarios:</string>
-    <string name="habits_tomorrow">Por la mañana ...¿què prefieres?</string>
-    <string name="habits_midday">A mediodía ...</string>
-    <string name="habits_night">Por la noche ...</string>
+    <string name="habits_tomorrow">Por la mañana &#8230;¿què prefieres?</string>
+    <string name="habits_midday">A mediodía &#8230;</string>
+    <string name="habits_night">Por la noche &#8230;</string>
     <string name="pre1_opc1">Desayuno fuerte y almuerzo ligero</string>
     <string name="pre1_opc2">Desayuno mediano y almuerzo mediano</string>
     <string name="pre1_opc3">Desayuno ligero y almuerzo fuerte</string>
@@ -142,9 +183,53 @@
     <string name="pre2_opc2">1er plato mediano y 2º plato mediano</string>
     <string name="pre3_opc1">1er plato ligero y 2º plato fuerte</string>
     <string name="pre3_opc2">1er plato mediano y 2º plato mediano</string>
+    <string name="create_profile_dietetic">Crear</string>
+    <string name="edit_profile_dietetic">Modificar</string>
 
     <!--Strings Hints -->
     <string name="prompt_profile_name">Nombre del perfil</string>
+    <string name="name_food_hint">Nombre</string>
+    <string name="prompt_weight">Peso neto</string>
+    <string name="prompt_fats">Grasas</string>
+    <string name="prompt_protein">Proteinas</string>
+    <string name="prompt_hydrates">Hidratos</string>
+    <string name="prompt_portion">Raciones</string>
+    <string name="prompt_kcal_balance">Kcal./Ración</string>
+    <string name="relation_hydrates_protein">Relación entre H / P:</string>
+    <string name="relation_fats">Relación con grasas:</string>
+
+    <!-- Strings Categories -->
+    <string name="other">Otros</string>
+    <string name="fruit">Frutas</string>
+    <string name="fats">Aceites</string>
+    <string name="vegetables">Verduras</string>
+    <string name="estate">Raices</string>
+    <string name="meats">Carnes</string>
+    <string name="sausages">Embutidos</string>
+    <string name="seafood">Mariscos</string>
+    <string name="pulse">Legumbres</string>
+    <string name="fish">Pescados</string>
+    <string name="cereals">Cereales</string>
+    <string name="sweet">Dulces</string>
+    <string name="drinks">Bebidas</string>
+    <string name="nuts">Frutos secos</string>
+    <string name="dairy_products">Lacteos</string>
+    <string name="sauces">Salsas</string>
+    <string name="eggs">Huevos</string>
+    <string name="not_food">No hay alimentos</string>
+    <string name="error_dialog_add_food">Falta seleccionar un alimento o añadir los gramos</string>
+    <string name="customize">Personalizar</string>
+    <string name="balance">Equilibrar</string>
+    <string name="composition">Composición:</string>
+    <string name="balance_ingredients">Equilibrar ingredientes</string>
+    <string name="custom_title">Personalizar</string>
+
+    <!-- String personal foods -->
+    <string name="complements">Mis complementos</string>
+    <string name="precooked">Mis precocinados</string>
+    <string name="my_combined">Mis combinados</string>
+    <string name="desserts">Mis postres</string>
+
 
     <!-- String Arrays -->
     <string-array name="sex">
@@ -175,8 +260,70 @@
 
     <string-array name="weight">
         <item>Mantener</item>
-        <item>Peder</item>
+        <item>Perder</item>
         <item>Ganar</item>
     </string-array>
+
+    <string-array name="location_disk">
+        <item>Desayuno</item>
+        <item>Almuerzo</item>
+        <item>1º Comida</item>
+        <item>2º Comida</item>
+        <item>1º + 2º Comida</item>
+        <item>Postre Comida</item>
+        <item>Merienda</item>
+        <item>1º Cena</item>
+        <item>2º Cena</item>
+        <item>1º + 2º Cena</item>
+        <item>Postre Cena</item>
+    </string-array>
+
+    <string-array name="portions">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <string name="hello_blank_fragment"> </string>
+    <string name="create_food">Crear ingrediente</string>
+    <string name="created">Crear</string>
+    <string name="message_error_empty_fields">Los campos Peso neto, Hidratos, Proteinas y Grasas son obligatorios</string>
+    <string name="is_balance">Los ingredientes ya están equilibrados</string>
+    <string name="my_progile">Mi perfil</string>
+    <string name="location_disk">Ubicación plato</string>
+    <string name="do_you_want_to_exit">¿Desea cerrar la aplicación?</string>
+    <string name="save_login">Recordar datos de acceso</string>
+    <string name="yes">Si</string>
+    <string name="not">No</string>
+    <string name="oil_message_1">Ajustar con</string>
+    <string name="oil_message_2">grs de aceite por ración. (1 cucharada sopera = 12 grs)</string>
+    <string name="not_internet">No tiene conexión a internet</string>
+    <string name="food_search">Buscar alimento</string>
+    <string name="update_ingredient">Editar ingrediente</string>
+    <string name="personal_food_title">Ingredientes personales</string>
+    <string name="prompt_vitamin_c">Vitamina C</string>
+    <string name="niacin">Niacina B3</string>
+    <string name="rivoflavin">Rivoflavina</string>
+    <string name="prompt_vitamin_b1">Tiamina B1</string>
+    <string name="vitamin_e">Vitamina E</string>
+    <string name="vitamin_a">Vitamina A</string>
+    <string name="calcium">Calcio</string>
+    <string name="iron">Hierro</string>
+    <string name="fibers">Fibras</string>
+    <string name="accept">Aceptar</string>
+    <string name="equal_symbol">(=)</string>
+    <string name="minus_symbol">(-)</string>
+    <string name="plus_symbol">(+)</string>
+    <string name="link">Enlace ayuda</string>
+    <string name="info">Información</string>
+    <string name="not_connection">Internet no disponible, vuelva a intentarlo más tarde.</string>
+    <string name="link_balance"><![CDATA[https://www.youtube.com/watch?v=PeNtWb_b1Dw&feature=youtu.be]]></string>
+    <string name="link_dietetic_profile"><![CDATA[https://www.youtube.com/watch?v=EDRYZnr9GoU&feature=youtu.be]]></string>
+
 
 </resources>
