@@ -220,7 +220,10 @@
     <string name="error_dialog_add_food">Falta seleccionar un alimento o añadir los gramos</string>
     <string name="customize">Personalizar</string>
     <string name="balance">Equilibrar</string>
+    <string name="composition_pro"><span style='font-size:50px;'>Composición:</span></string>
+
     <string name="composition">Composición:</string>
+    <string name="composition_mini">Comp:</string>
     <string name="balance_ingredients">Equilibrar ingredientes</string>
     <string name="custom_title">Personalizar</string>
 

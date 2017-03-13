@@ -2,11 +2,16 @@ package com.dyetica.app.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -76,15 +81,19 @@ public class DieteticsProfileFragment extends Fragment {
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         if (MethodsUtil.isTablet(getContext())) {
-            tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = (int) (60 * this.getResources().getDisplayMetrics().density);
+            if (tabHost.getTabWidget().getChildAt(0).getLayoutParams().height < 90) {
+                tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = (int) (45 * this.getResources().getDisplayMetrics().density);
+            }
             tabHost.getTabWidget().getChildAt(0).setPadding(0,0,0,0);
             TextView x =(TextView) tabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
-            x.setTextSize(16);
+            x.setTextSize(15);
 
-            tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = (int) (60 * this.getResources().getDisplayMetrics().density);
+            if (tabHost.getTabWidget().getChildAt(1).getLayoutParams().height < 90) {
+                tabHost.getTabWidget().getChildAt(1).getLayoutParams().height = (int) (45 * this.getResources().getDisplayMetrics().density);
+            }
             tabHost.getTabWidget().getChildAt(1).setPadding(0,0,0,0);
             TextView x2 =(TextView) tabHost.getTabWidget().getChildAt(1).findViewById(android.R.id.title);
-            x2.setTextSize(16);
+            x2.setTextSize(15);
         } else {
             tabHost.getTabWidget().getChildAt(0).getLayoutParams().height = (int) (40 * this.getResources().getDisplayMetrics().density);
             tabHost.getTabWidget().getChildAt(0).setPadding(0,0,0,0);

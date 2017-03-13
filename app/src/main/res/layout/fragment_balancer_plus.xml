@@ -9,10 +9,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.22"
+        android:layout_weight="0.25"
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -93,6 +94,17 @@
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.43"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:orientation="vertical"
+        android:gravity="top">
+
         <TextView
             android:id="@+id/balancer_text"
             android:layout_width="match_parent"
@@ -106,16 +118,6 @@
             android:textColor="@color/colorGreenApp"
             android:textSize="16sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.40"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:orientation="vertical">
-
         <ListView
             android:id="@+id/list_view_foods"
             android:layout_width="match_parent"
@@ -126,10 +128,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.35"
+        android:layout_weight="0.37"
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -256,9 +259,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_view_balance"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:paddingBottom="4dp"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:lineSpacingExtra="0dp" />
 
         </LinearLayout>
 
@@ -280,7 +284,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/relation_hydrates_protein_text"
                 android:textSize="13sp"
-                android:layout_weight="2"/>
+                android:layout_weight="30"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -288,7 +292,7 @@
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:id="@+id/relation_hydrates_protein_value"
-                android:layout_weight="3"/>
+                android:layout_weight="37"/>
         </LinearLayout>
 
         <LinearLayout
@@ -309,7 +313,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:id="@+id/relation_fats_text"
-                android:layout_weight="2"/>
+                android:layout_weight="30"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -317,7 +321,7 @@
                 android:textSize="13sp"
                 android:id="@+id/relation_fats_value"
                 android:textStyle="bold"
-                android:layout_weight="3"/>
+                android:layout_weight="37"/>
         </LinearLayout>
 
         <LinearLayout

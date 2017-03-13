@@ -5,293 +5,295 @@
     android:layout_height="match_parent"
     android:id="@+id/frame_layout_id"
     tools:context="com.dyetica.app.fragments.DieteticProfileFragment"
-    android:paddingTop="60dp">
+    android:layout_marginTop="70dp">
 
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/layoutCreateContainer"
-    android:padding="10dp"
+    android:padding="20dp"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:paddingTop="10dp"
+        android:textSize="22sp"
+        android:paddingTop="20dp"
         android:textColor="@android:color/holo_green_dark"
         android:id="@+id/dietetic_profile_title_new" />
 
     <TextView
         android:id="@+id/dietetic_profile_new_content"
         android:layout_width="match_parent"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
+        android:textSize="20sp"
         android:layout_height="wrap_content"
         />
 
     <Button
-        android:layout_width="175dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Crear perfil"
         android:layout_marginTop="20dp"
         android:id="@+id/button_profile_dietetic_new"
         android:layout_gravity="center_horizontal"
         android:visibility="invisible"
-        android:theme="@style/ButtonApp"/>
+        android:theme="@style/ButtonAppLarge"/>
 
 </LinearLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
-    android:orientation="horizontal">
-
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_weight="1"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_gravity="center_vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:gravity="top">
-
-    <TextView
-        android:id="@+id/dietetic_profile_text_2"
-        android:layout_width="match_parent"
-        android:textSize="16sp"
-        android:paddingTop="10dp"
-        android:textColor="@android:color/holo_green_dark"
-        android:paddingBottom="10dp"
-        android:layout_height="wrap_content"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
+        android:padding="20dp"
         android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputLayout
+        <ScrollView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:hint="@string/prompt_breakfast"
-            android:id="@+id/breakfast_hint_profile_1"
-            app:hintTextAppearance="@style/TextLabel"
-            android:visibility="invisible">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:textSize="16sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@android:color/tertiary_text_dark"
-                android:id="@+id/breakfast_profile_1" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_lunch"
-            android:id="@+id/lunch_hint_profile_1"
-            app:hintTextAppearance="@style/TextLabel"
-            android:visibility="invisible">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:textSize="16sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@android:color/tertiary_text_dark"
-                android:id="@+id/lunch_profile_1" />
-        </android.support.design.widget.TextInputLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:orientation="horizontal">
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_food"
-            android:id="@+id/food_hint_profile_1"
-            app:hintTextAppearance="@style/TextLabel"
-            android:visibility="invisible">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:textSize="16sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@android:color/tertiary_text_dark"
-                android:id="@+id/food_profile_1" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_snack"
-            android:id="@+id/snack_hint_profile_1"
-            app:hintTextAppearance="@style/TextLabel"
-            android:visibility="invisible" >
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:textSize="16sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@android:color/tertiary_text_dark"
-                android:id="@+id/snack_profile_1" />
-        </android.support.design.widget.TextInputLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical">
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:hint="@string/prompt_dinner"
-        android:id="@+id/dinner_hint_profile_1"
-        app:hintTextAppearance="@style/TextLabel"
-        android:visibility="invisible"
-        android:gravity="center_horizontal">
-        <EditText
+            android:fillViewport="true"
+            android:layout_gravity="top">
+        <LinearLayout
             android:layout_width="match_parent"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:textSize="16sp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:textColor="@android:color/tertiary_text_dark"
-            android:id="@+id/dinner_profile_1" />
-    </android.support.design.widget.TextInputLayout>
+            android:gravity="top">
 
-   </LinearLayout>
-
-    </LinearLayout>
-</ScrollView>
-
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <!--
-   <TextView
-       android:id="@+id/dietetic_profile_text"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       />
--->
         <TextView
-            android:id="@+id/dietetic_profile_text_1"
+            android:id="@+id/dietetic_profile_text_2"
             android:layout_width="match_parent"
-            android:textSize="16sp"
+            android:textSize="22sp"
             android:paddingTop="10dp"
             android:textColor="@android:color/holo_green_dark"
-            android:paddingBottom="10dp"
+            android:paddingBottom="20dp"
             android:layout_height="wrap_content"
             />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
+            android:paddingBottom="20dp"
             android:orientation="horizontal">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_kcal"
-                android:id="@+id/kcal_hint_profile_1"
-                app:hintTextAppearance="@style/TextLabel"
-                android:visibility="invisible"
-                >
+                android:hint="@string/prompt_breakfast"
+                android:id="@+id/breakfast_hint_profile_1"
+                app:hintTextAppearance="@style/TextLabelLarge"
+                android:visibility="invisible">
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:inputType="numberDecimal"
+                    android:textSize="20sp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:textColor="@android:color/tertiary_text_dark"
-                    android:id="@+id/kcal_profile_1" />
+                    android:id="@+id/breakfast_profile_1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_c_grasae"
-                android:id="@+id/c_grasa_hint_profile_1"
-                app:hintTextAppearance="@style/TextLabel"
-                android:visibility="invisible"
-                >
+                android:hint="@string/prompt_lunch"
+                android:id="@+id/lunch_hint_profile_1"
+                app:hintTextAppearance="@style/TextLabelLarge"
+                android:visibility="invisible">
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:textSize="16sp"
+                    android:inputType="number"
+                    android:textSize="20sp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:textColor="@android:color/tertiary_text_dark"
-                    android:id="@+id/c_grasa_profile_1" />
+                    android:id="@+id/lunch_profile_1" />
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 
-        <Button
-            android:layout_width="175dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Modificar perfil"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="center_horizontal|bottom"
-            android:id="@+id/button_profile_dietetic_update"
-            android:visibility="invisible"
-            android:theme="@style/ButtonApp"/>
+            android:paddingBottom="20dp"
+            android:orientation="horizontal">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_food"
+                android:id="@+id/food_hint_profile_1"
+                app:hintTextAppearance="@style/TextLabelLarge"
+                android:visibility="invisible">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:textSize="20sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@android:color/tertiary_text_dark"
+                    android:id="@+id/food_profile_1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_snack"
+                android:id="@+id/snack_hint_profile_1"
+                app:hintTextAppearance="@style/TextLabelLarge"
+                android:visibility="invisible" >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textSize="20sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@android:color/tertiary_text_dark"
+                    android:id="@+id/snack_profile_1" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:paddingBottom="20dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:hint="@string/prompt_dinner"
+            android:id="@+id/dinner_hint_profile_1"
+            app:hintTextAppearance="@style/TextLabelLarge"
+            android:visibility="invisible"
+            android:gravity="center_horizontal">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textSize="20sp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="@android:color/tertiary_text_dark"
+                android:id="@+id/dinner_profile_1" />
+        </android.support.design.widget.TextInputLayout>
+
+       </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <!--
+       <TextView
+           android:id="@+id/dietetic_profile_text"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           />
+    -->
             <TextView
+                android:id="@+id/dietetic_profile_text_1"
+                android:layout_width="match_parent"
+                android:textSize="22sp"
+                android:paddingTop="10dp"
+                android:textColor="@android:color/holo_green_dark"
+                android:paddingBottom="20dp"
+                android:layout_height="wrap_content"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_kcal"
+                    android:id="@+id/kcal_hint_profile_1"
+                    app:hintTextAppearance="@style/TextLabelLarge"
+                    android:visibility="invisible"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:textColor="@android:color/tertiary_text_dark"
+                        android:id="@+id/kcal_profile_1" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_c_grasae"
+                    android:id="@+id/c_grasa_hint_profile_1"
+                    app:hintTextAppearance="@style/TextLabelLarge"
+                    android:visibility="invisible"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textSize="20sp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:textColor="@android:color/tertiary_text_dark"
+                        android:id="@+id/c_grasa_profile_1" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/last_update_date"
+                android:text="Modificar perfil"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:layout_gravity="center_horizontal|bottom"
-                android:visibility="invisible" />
+                android:id="@+id/button_profile_dietetic_update"
+                android:visibility="invisible"
+                android:theme="@style/ButtonAppLarge"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/last_update_date"
+                    android:textSize="18dp"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
 
 </FrameLayout>

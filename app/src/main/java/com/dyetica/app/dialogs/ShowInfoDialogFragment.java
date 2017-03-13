@@ -40,6 +40,7 @@ public class ShowInfoDialogFragment extends DialogFragment {
     private static final String HYDRATES = "hydrates";
     private static final String PORTION = "portion";
     private static final String FATS = "fats";
+    public static final int THE_SIZE = 20;
     private int portion;
     private ArrayList<Parcelable> foodList;
     private DBManager dbManager;
@@ -131,7 +132,8 @@ public class ShowInfoDialogFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(rootViewDialog).setTitle(R.string.composition).setIcon(R.drawable.icon_dyetica)
+
+        builder.setView(rootViewDialog).setTitle(R.string.composition_pro).setIcon(R.drawable.icon_dyetica)
                 // Add action buttons
                 .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
                     @Override
@@ -139,7 +141,14 @@ public class ShowInfoDialogFragment extends DialogFragment {
 
                     }
                 });
-        return builder.create();
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        if (MethodsUtil.isTablet(getContext())) {
+            // Positive
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(THE_SIZE);
+        }
+        return dialog;
     }
 
     private void calcComposition() {

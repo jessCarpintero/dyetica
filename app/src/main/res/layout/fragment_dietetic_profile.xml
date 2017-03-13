@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:id="@+id/frame_layout_id"
     tools:context="com.dyetica.app.fragments.DieteticProfileFragment"
-    android:paddingTop="40dp">
+    android:paddingTop="30dp">
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:padding="10dp"
     android:orientation="vertical">
 
@@ -17,8 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/layoutCreateContainer"
-        android:padding="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -84,8 +84,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:id="@+id/kcal_profile_1" />
         </android.support.design.widget.TextInputLayout>
@@ -104,8 +104,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:textSize="15sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:id="@+id/c_grasa_profile_1" />
         </android.support.design.widget.TextInputLayout>
@@ -116,7 +116,6 @@
         android:id="@+id/dietetic_profile_text_2"
         android:layout_width="match_parent"
         android:textSize="16sp"
-        android:paddingTop="10dp"
         android:textColor="@android:color/holo_green_dark"
         android:paddingBottom="10dp"
         android:layout_height="wrap_content"
@@ -141,8 +140,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:textSize="15sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:id="@+id/breakfast_profile_1" />
         </android.support.design.widget.TextInputLayout>
@@ -160,8 +159,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:textSize="15sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:id="@+id/lunch_profile_1" />
         </android.support.design.widget.TextInputLayout>
@@ -187,8 +186,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:textSize="15sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:id="@+id/food_profile_1" />
         </android.support.design.widget.TextInputLayout>
@@ -206,8 +205,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:textSize="15sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:id="@+id/snack_profile_1" />
         </android.support.design.widget.TextInputLayout>
@@ -235,8 +234,8 @@
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:textSize="15sp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:textColor="@android:color/tertiary_text_dark"
             android:id="@+id/dinner_profile_1" />
     </android.support.design.widget.TextInputLayout>
@@ -247,7 +246,7 @@
         android:layout_width="175dp"
         android:layout_height="wrap_content"
         android:text="Modificar perfil"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="20dp"
         android:layout_gravity="center_horizontal|bottom"
         android:id="@+id/button_profile_dietetic_update"
@@ -268,5 +267,4 @@
 
     </LinearLayout>
     </LinearLayout>
-
 </FrameLayout>

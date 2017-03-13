@@ -43,7 +43,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:hintTextAppearance="@style/TextLabel"
+        app:hintTextAppearance="@style/TextLabelLarge"
         android:hint="@string/prompt_profile_name"
         android:layout_weight="1">
 
@@ -51,7 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:ems="10"
+            android:textSize="20sp"
+            android:maxLength="10"
             android:id="@+id/editTextNameProfile"
             android:layout_gravity="center_horizontal"/>
     </android.support.design.widget.TextInputLayout>
@@ -59,7 +60,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:hintTextAppearance="@style/TextLabel"
+        app:hintTextAppearance="@style/TextLabelLarge"
         android:hint="@string/prompt_birthay_day"
         android:id="@+id/view"
         android:layout_weight="1">
@@ -67,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:ems="10"
+            android:textSize="20sp"
             android:maxLength="10"
             android:id="@+id/editTextbirthDay"
             android:layout_gravity="center_horizontal" />
@@ -78,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/characteristics_text"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:paddingTop="10dp"
         android:textColor="@android:color/holo_green_dark"
         android:id="@+id/textCharacteristics"
@@ -94,16 +95,18 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
 
+
             <TextView
                 android:text="@string/sex_tilte"
                 android:id="@+id/textViewSex"
                 android:layout_width="match_parent"
+                android:textSize="20sp"
                 android:layout_height="wrap_content"
                 />
             <Spinner
                 android:layout_width="match_parent"
                 android:id="@+id/spinner_sex"
-                 android:layout_height="35dp" />
+                android:layout_height="35dp" />
             </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -113,6 +116,7 @@
             <TextView
                 android:text="@string/height_tilte"
                 android:id="@+id/textViewHeight"
+                android:textSize="20sp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 />
@@ -139,6 +143,7 @@
                 android:text="@string/weight_tilte"
                 android:id="@+id/textViewWeight"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 />
 
@@ -157,6 +162,7 @@
                 android:text="@string/complexion_tilte"
                 android:id="@+id/textViewComplexion"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 />
 
@@ -179,13 +185,14 @@
             <TextView
                 android:text="@string/physical_activity_tilte"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:id="@+id/textViewPhysicalActivity"
                 />
 
             <Spinner
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="50dp"
                 android:id="@+id/spinner_physical_activity"
                 android:entries="@array/physical_activity"/>
         </LinearLayout>
@@ -198,6 +205,7 @@
                 android:text="@string/stage_tilte"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:textSize="20sp"
                 android:id="@+id/textViewStage"
                 />
 
@@ -213,7 +221,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/feeding_habits"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:textColor="@android:color/holo_green_dark"
@@ -222,6 +230,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="22sp"
         android:text="@string/habits_tomorrow"
         android:id="@+id/textViewHabitsTomorrow" />
 
@@ -232,16 +241,19 @@
         <RadioButton android:id="@+id/radio_pre1_opc1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:text="@string/pre1_opc1"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio_pre1_opc2"
             android:layout_width="wrap_content"
+            android:textSize="20sp"
             android:layout_height="wrap_content"
             android:text="@string/pre1_opc2"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio_pre1_opc3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:text="@string/pre1_opc3"
             android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
@@ -250,6 +262,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/habits_midday"
+        android:textSize="22sp"
         android:id="@+id/textViewHabitsMidday"
         android:layout_marginTop="10dp" />
 
@@ -260,10 +273,12 @@
     <RadioButton android:id="@+id/radio_pre2_opc1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:text="@string/pre2_opc1"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio_pre2_opc2"
             android:layout_width="wrap_content"
+            android:textSize="20sp"
             android:layout_height="wrap_content"
             android:text="@string/pre2_opc2"
             android:onClick="onRadioButtonClicked"/>
@@ -273,6 +288,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/habits_night"
+        android:textSize="22sp"
         android:id="@+id/textViewHabitsNight"
         android:layout_marginTop="10dp" />
 
@@ -283,11 +299,13 @@
     <RadioButton android:id="@+id/radio_pre3_opc1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:text="@string/pre2_opc1"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio_pre3_opc2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:text="@string/pre2_opc2"
             android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
@@ -295,7 +313,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:textColor="@android:color/holo_green_dark"
@@ -315,6 +333,7 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:text="@string/weight_tilte"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:id="@+id/textViewWeight2" />
 
@@ -331,13 +350,13 @@
     android:layout_weight="1"
     android:layout_height="wrap_content"
     android:hint="@string/prompt_rate"
-    app:hintTextAppearance="@style/TextLabel"
+    app:hintTextAppearance="@style/TextLabelLarge"
     android:id="@+id/viewRate">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:inputType="numberDecimal"
-        android:ems="10"
         android:maxLength="10"
         android:id="@+id/editTextRate"/>
 </android.support.design.widget.TextInputLayout>
@@ -353,13 +372,13 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:hint="@string/prompt_kcal"
-        app:hintTextAppearance="@style/TextLabel"
+        app:hintTextAppearance="@style/TextLabelLarge"
         android:id="@+id/viewKcal">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:inputType="numberDecimal"
-            android:ems="10"
             android:maxLength="10"
             android:id="@+id/editTextKcal"/>
     </android.support.design.widget.TextInputLayout>
@@ -368,13 +387,13 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        app:hintTextAppearance="@style/TextLabel"
+        app:hintTextAppearance="@style/TextLabelLarge"
         android:hint="@string/prompt_c_grasae">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:inputType="numberDecimal"
-            android:ems="10"
             android:maxLength="10"
             android:id="@+id/editTextCG" />
     </android.support.design.widget.TextInputLayout>
@@ -391,14 +410,14 @@
         android:layout_height="wrap_content"
         android:text="@string/calculate"
         android:id="@+id/button_calculate"
-        android:theme="@style/ButtonApp" />
+        android:theme="@style/ButtonAppLarge" />
 
     <Button
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:id="@+id/button_create_profile_dietetic"
-        android:theme="@style/ButtonApp" />
+        android:theme="@style/ButtonAppLarge" />
 
     </LinearLayout>
 

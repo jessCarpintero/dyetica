@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dyetica.app.LoginActivity;
@@ -47,6 +48,7 @@ import java.util.concurrent.ExecutionException;
 public class CreateFoodDialogFragment extends DialogFragment {
     private static final String ID_EXTENSIONS_BALANCER_PLUS = "idExtensionsBalancerPlus";
     private static final String PORTION = "portion";
+    private static final int THE_SIZE = 20;
 
     private Spinner mSpinnerLocationFood;
     private DBManager dbManager;
@@ -136,11 +138,19 @@ public class CreateFoodDialogFragment extends DialogFragment {
         tabs.addTab(tabpage2);
         tabs.addTab(tabpage1);
 
-        tabs.getTabWidget().getChildAt(0).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
-        tabs.getTabWidget().getChildAt(0).setPadding(0,0,0,0);
+        if (!MethodsUtil.isTablet(getContext())) {
+            tabs.getTabWidget().getChildAt(0).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
+            tabs.getTabWidget().getChildAt(0).setPadding(0, 0, 0, 0);
 
-        tabs.getTabWidget().getChildAt(1).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
-        tabs.getTabWidget().getChildAt(1).setPadding(0,0,0,0);
+            tabs.getTabWidget().getChildAt(1).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
+            tabs.getTabWidget().getChildAt(1).setPadding(0, 0, 0, 0);
+        } else {
+            TextView title =(TextView) tabs.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
+            title.setTextSize(17);
+
+            TextView title2 =(TextView) tabs.getTabWidget().getChildAt(1).findViewById(android.R.id.title);
+            title2.setTextSize(17);
+        }
 
         categories = new HashMap<>();
         dbManager = DBManager.getInstance(getActivity());
@@ -151,6 +161,7 @@ public class CreateFoodDialogFragment extends DialogFragment {
         mArrayAdapterLocationFood = initSpinnerListLocation();
         mSpinnerLocationFood.setAdapter(mArrayAdapterLocationFood);
         mNetWeight = (EditText) rootViewDialog.findViewById(R.id.edit_text_net_weight);
+        mNetWeight.clearFocus();
         mProteins = (EditText) rootViewDialog.findViewById(R.id.edit_text_protein);
         mHydrates = (EditText) rootViewDialog.findViewById(R.id.edit_text_hydrates);
         mFats = (EditText) rootViewDialog.findViewById(R.id.edit_text_fats);
@@ -161,6 +172,7 @@ public class CreateFoodDialogFragment extends DialogFragment {
         mArrayAdapterLocationFoodUpdate = initSpinnerListLocation();
         mSpinnerLocationFoodUpdate.setAdapter(mArrayAdapterLocationFoodUpdate);
         mNetWeightUpdate = (EditText) rootViewDialog.findViewById(R.id.edit_text_net_weight_update);
+        mNetWeightUpdate.clearFocus();
         mProteinsUpdate = (EditText) rootViewDialog.findViewById(R.id.edit_text_protein_update);
         mHydratesUpdate = (EditText) rootViewDialog.findViewById(R.id.edit_text_hydrates_update);
         mFatsUpdate = (EditText) rootViewDialog.findViewById(R.id.edit_text_fats_update);
@@ -251,6 +263,7 @@ public class CreateFoodDialogFragment extends DialogFragment {
                 });
 
         final AlertDialog dialog = builder.create();
+        dialog.show();
 
         tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -258,13 +271,25 @@ public class CreateFoodDialogFragment extends DialogFragment {
                 if ("CreatePersonalFood".equals(tabId)) {
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(getString(R.string.created));
                     dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setVisibility(View.INVISIBLE);
+                    mNetWeight.clearFocus();
+                    mDescriptionFood.clearFocus();
                 } else {
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setText(getString(R.string.update));
                     dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setVisibility(View.VISIBLE);
+                    mNetWeightUpdate.clearFocus();
                 }
             }
         });
 
+        if (MethodsUtil.isTablet(getContext())) {
+            // Positive
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(THE_SIZE);
+            // Negative
+            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(THE_SIZE);
+            // Neutral
+            dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextSize(THE_SIZE);
+
+        }
         return dialog;
 
     }
@@ -315,7 +340,7 @@ public class CreateFoodDialogFragment extends DialogFragment {
         listLocations.add(getString(R.string.desserts));
 
         ArrayAdapter adapterSppiner = new ArrayAdapter(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, listLocations);
+                R.layout.spinner_item, listLocations);
         return  adapterSppiner;
     }
 

@@ -19,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dyetica.app.R;
@@ -41,6 +42,7 @@ public class BalanceDialogFragment extends DialogFragment {
     private static final String PROTEIN = "protein";
     private static final String HYDRATES = "hydrates";
     private static final String FOOD = "food_selectSearch";
+    private static final int THE_SIZE = 20;
     private boolean isUpdateFood;
     private Spinner mSpinnerCategories;
     private Spinner mSpinnerFoods;
@@ -131,11 +133,20 @@ public class BalanceDialogFragment extends DialogFragment {
         tabs.addTab(tabpage1);
         tabs.addTab(tabpage2);
 
-        tabs.getTabWidget().getChildAt(0).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
-        tabs.getTabWidget().getChildAt(0).setPadding(0,0,0,0);
+        if (!MethodsUtil.isTablet(getContext())) {
+            tabs.getTabWidget().getChildAt(0).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
+            tabs.getTabWidget().getChildAt(0).setPadding(0,0,0,0);
 
-        tabs.getTabWidget().getChildAt(1).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
-        tabs.getTabWidget().getChildAt(1).setPadding(0,0,0,0);
+            tabs.getTabWidget().getChildAt(1).getLayoutParams().height = (int) (35 * this.getResources().getDisplayMetrics().density);
+            tabs.getTabWidget().getChildAt(1).setPadding(0,0,0,0);
+
+        } else {
+            TextView title =(TextView) tabs.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
+            title.setTextSize(17);
+
+            TextView title2 =(TextView) tabs.getTabWidget().getChildAt(1).findViewById(android.R.id.title);
+            title2.setTextSize(17);
+        }
 
         categories = new HashMap<>();
         dbManager = DBManager.getInstance(getActivity());
@@ -145,9 +156,19 @@ public class BalanceDialogFragment extends DialogFragment {
         mArrayAdapterCategories = initSpinnerListCategories(extensionsBalancerPlus);
         mSpinnerCategories.setAdapter(mArrayAdapterCategories);
         mGrams = (EditText) rootViewDialog.findViewById(R.id.edit_text_grams);
+        mGrams.clearFocus();
         mGramsByName = (EditText) rootViewDialog.findViewById(R.id.edit_text_grams2);
         mFoodAllAutoComplete = (AutoCompleteTextView) rootViewDialog.findViewById(R.id.foodAllAutoComplete);
         mFoodAllAutoComplete.setAdapter(initFoodAutoComplete(extensionsBalancerPlus));
+
+        tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                if ("AddFoodByCategory".equals(tabs.getCurrentTabTag())) {
+                    mGrams.clearFocus();
+                }
+            }
+        });
 
 
         mSpinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -214,7 +235,15 @@ public class BalanceDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        if (MethodsUtil.isTablet(getContext())) {
+            // Positive
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(THE_SIZE);
+            // Negative
+            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(THE_SIZE);
+        }
+        return dialog;
     }
 
 
@@ -284,7 +313,7 @@ public class BalanceDialogFragment extends DialogFragment {
         addCategoryInCategories(extensionsBalancerPlus.getOtros(), getString(R.string.other));
 
         ArrayAdapter adapterSppiner = new ArrayAdapter(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, listCategories);
+                R.layout.spinner_item, listCategories);
         return  adapterSppiner;
     }
 

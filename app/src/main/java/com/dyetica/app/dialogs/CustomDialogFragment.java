@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
@@ -38,6 +39,7 @@ public class CustomDialogFragment extends DialogFragment {
     private static final String FOOD_LIST = "food_list";
     private static final String PORTION = "portion";
     private static final String KCAL_PORTION = "kcal_portion";
+    private static final int THE_SIZE = 20;
 
     private ArrayList<Parcelable> foodList;
     private Spinner mSpinnerMyProfile;
@@ -117,8 +119,12 @@ public class CustomDialogFragment extends DialogFragment {
         mSpinnerMyProfile.setAdapter(mArrayAdapterMyProfile);
         initLocationDiskList();
         mSpinnerLocationDisk = (Spinner) rootViewDialog.findViewById(R.id.spinner_location_disk);
+        mSpinnerLocationDisk.setAdapter(new ArrayAdapter(getContext(),
+                R.layout.spinner_item, getResources().getTextArray(R.array.location_disk)));
         mSpinnerPortions = (Spinner) rootViewDialog.findViewById(R.id.spinner_portion);
         mSpinnerPortions.setSelection(portion-1);
+        mSpinnerPortions.setAdapter(new ArrayAdapter(getContext(),
+                R.layout.spinner_item, getResources().getTextArray(R.array.portions)));
         mKcalPortion = (EditText) rootViewDialog.findViewById(R.id.kcal_balance_text);
         mKcalPortion.setText(String.valueOf(kcalPortion));
 
@@ -191,7 +197,15 @@ public class CustomDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        if (MethodsUtil.isTablet(getContext())) {
+            // Positive
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(THE_SIZE);
+            // Negative
+            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(THE_SIZE);
+        }
+        return dialog;
     }
 
     private void initLocationDiskList() {
@@ -366,7 +380,7 @@ public class CustomDialogFragment extends DialogFragment {
             listMyProfiles.add("Nº " + (i + 1));
         }
         ArrayAdapter adapterSppiner = new ArrayAdapter(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, listMyProfiles);
+                R.layout.spinner_item, listMyProfiles);
         return  adapterSppiner;
     }
 

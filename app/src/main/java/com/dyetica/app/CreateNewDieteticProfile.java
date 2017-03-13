@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,11 +29,6 @@ import com.dyetica.app.model.User;
 import com.dyetica.app.persistence.ClientHTTP;
 import com.dyetica.app.persistence.DBManager;
 import com.dyetica.app.utils.MethodsUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -131,15 +124,22 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
         weightSpinner.setAdapter(initSppinerAdapter(10, 300));
 
         sexSpinner = (Spinner)findViewById(R.id.spinner_sex);
+        sexSpinner.setAdapter(new ArrayAdapter(this,
+                R.layout.spinner_item, getResources().getTextArray(R.array.sex)));
         complexionSpinner = (Spinner)findViewById(R.id.spinner_complexion);
-
+        complexionSpinner.setAdapter(new ArrayAdapter(this,
+                R.layout.spinner_item, getResources().getTextArray(R.array.complexion)));
         activitySpinner = (Spinner)findViewById(R.id.spinner_physical_activity);
-
+        activitySpinner.setAdapter(new ArrayAdapter(this,
+                R.layout.spinner_item, getResources().getTextArray(R.array.physical_activity)));
         stageSpinner = (Spinner)findViewById(R.id.spinner_stage);
-
+        stageSpinner.setAdapter(new ArrayAdapter(this,
+                R.layout.spinner_item, getResources().getTextArray(R.array.stage)));
         mRate = (EditText) findViewById(R.id.editTextRate);
 
         objectiveSpinner = (Spinner)findViewById(R.id.spinner_objective);
+        objectiveSpinner.setAdapter(new ArrayAdapter(this,
+                R.layout.spinner_item, getResources().getTextArray(R.array.weight)));
 
         mQuestion1 = (RadioGroup) findViewById(R.id.radio_question1);
         mQuestion2 = (RadioGroup) findViewById(R.id.radio_question2);
@@ -447,7 +447,7 @@ public class CreateNewDieteticProfile extends AppCompatActivity {
         }
 
         ArrayAdapter adapterSppiner = new ArrayAdapter(this,
-                android.R.layout.simple_spinner_dropdown_item, list);
+                R.layout.spinner_item, list);
 
         return adapterSppiner;
     }
